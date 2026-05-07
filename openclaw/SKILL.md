@@ -1,38 +1,60 @@
 ---
 name: codivupload-social-manager
 description: |
-  REQUIRED CREDENTIAL: CODIVUPLOAD_API_KEY (bearer token, format cdv_*).
-  RECOMMENDED KEY SCOPE: per-workspace key (NOT a global account key) —
-  CodivUpload supports four scope tiers (single-platform, per-workspace,
-  posting-only, global); skill expects per-workspace by default and warns
-  before letting a global key trigger billing or cross-workspace actions.
-  Store the key only in OpenClaw config, never echo or paste it, rotate
-  immediately if exposed.
+  Turn your OpenClaw into an autonomous social media manager. Schedule,
+  publish, cross-post, and analyze content across YouTube, Instagram,
+  Facebook, X (Twitter), TikTok, Threads, and Pinterest from one skill —
+  7+ launched social platforms with Bluesky in active rollout. YouTube
+  scheduler, Instagram Reels publisher, X (Twitter) thread poster with
+  long-form 25K-character support on Premium accounts, Facebook Pages
+  scheduler, TikTok auto-poster with Direct Post + Draft modes, multi-
+  platform cross-poster, Pinterest pin scheduler, Threads conversation
+  scheduler — all in one skill. Power features: BYOP (Bring Your Own
+  Project) for unlimited YouTube upload quota via your own Google Cloud
+  project, BYOK (Bring Your Own Keys) for unlimited X posts via your own
+  X Developer App, 24/7 managed YouTube live streaming with FFmpeg relay
+  (zero CPU on your machine), agency multi-workspace + RBAC with
+  whitelabel branded OAuth, presigned upload flow for media files up to
+  5GB, 50+ platform-specific override parameters, AI caption generation,
+  best-time-to-post analytics, queue + calendar + scheduler, webhook
+  notifications. Use when user wants to schedule social media posts,
+  cross-post to multiple platforms, run a 24/7 livestream, manage YouTube
+  / Instagram / X / TikTok via API, run a multi-tenant agency stack, or
+  wants a Buffer / Hootsuite / Later / Post-Bridge / Upload-Post /
+  Ayrshare alternative with deeper API + agent-native integration.
+  Triggers on any platform name combined with automation, API,
+  scheduling, posting, content management, or live stream intent.
 
-  Social media manager skill for OpenClaw — schedule, publish, cross-post,
-  and manage content on YouTube, Instagram, Facebook, X (Twitter), TikTok,
-  Threads, and Pinterest from one skill. 7+ launched social platforms with
-  Bluesky in active rollout. Optional MCP server (codivupload-mcp, install
-  with EXACT pin codivupload-mcp@2.0.0, never @latest or @^), BYOP for
-  unlimited YouTube quota, BYOK for unlimited X posts, 24/7 managed live
-  streaming with explicit DELETE /v1/livestreams/{id} stop instruction,
-  agency multi-workspace + RBAC. All publishing actions (immediate publish,
-  bulk ≥3, livestream start, profile changes, billing) are
-  confirmation-gated by SKILL.md defaults — the skill refuses silent
-  execution of public posts via OpenClaw's exec tool.
-
-  Use when user wants to schedule social media posts, cross-post to multiple
-  platforms, manage YouTube / Instagram / X / TikTok via API, or wants a
-  Buffer / Hootsuite / Later / Post-Bridge / Upload-Post / Ayrshare
-  alternative. Triggers on any platform name combined with automation, API,
-  scheduling, posting, or content management intent.
+  Credentials & safety boundary (read before installing):
+  Requires CODIVUPLOAD_API_KEY (bearer token, format cdv_<40 chars>) —
+  set via `openclaw config set CODIVUPLOAD_API_KEY=cdv_…`, never paste it
+  in chat. Recommended key scope is **per-workspace** (CodivUpload
+  supports single-platform / per-workspace / posting-only narrowing tiers
+  via Dashboard → Settings → API Keys); avoid global account keys for
+  agent use. Optional companion package `codivupload-mcp` is a credentialed
+  runtime — install ONLY with an exact version pin
+  (`npm install -g codivupload-mcp@2.0.0`), verify publisher (`codivion
+  <accounts@codivion.com>`) and integrity (sha512
+  `pK0r8XkR2M/brfn1Nsy6Uh7nGDx5qpx9h3pLgZljYkU3pv0BXKb7uJapBOFL11mBIQhWAl0hASxxCSLE11SDfA==`)
+  before relying on it; never run `npx -y` against floating ranges. The
+  skill works fully without the MCP server (REST API + TypeScript / Python
+  SDKs). Workflow guidance baked into SKILL.md routes the agent toward
+  scheduled / draft modes over immediate publish, single-platform smoke
+  tests before bulk fan-out, test profiles before production, and surfaces
+  the explicit `DELETE /v1/livestreams/{id}` stop instruction whenever a
+  livestream is started — but the **technical security boundary is
+  OpenClaw's per-tool approval prompts and the user's own review of every
+  proposed publish, bulk operation, livestream start, profile change, and
+  billing-impacting action**, not the markdown text. Approve only what
+  you've reviewed.
 metadata.openclaw.os: ["darwin", "linux", "windows"]
 metadata.openclaw.requires.bins: ["node", "npx", "curl"]
 metadata.openclaw.requires.config: ["CODIVUPLOAD_API_KEY"]
 metadata.openclaw.permissions.network: ["api.codivupload.com", "cdn.codivupload.com", "r2.codivupload.com"]
-metadata.openclaw.permissions.scope: "publishing-authority (per-workspace key recommended; refuse silent billing/cross-workspace actions when key is global)"
-metadata.openclaw.permissions.summary: "Delegates posting authority over CodivUpload-connected social accounts. Default expectation = per-workspace key. All publishing/livestream/billing actions confirmation-gated by SKILL.md."
+metadata.openclaw.permissions.scope: "Skill calls a documented REST API on behalf of the user. Authority is bounded server-side by the issued API key — recommend per-workspace key (CodivUpload's narrowing tier) over the global account key."
+metadata.openclaw.permissions.summary: "Skill performs CodivUpload REST API calls. Effective authority = whatever the issued bearer token authorizes; technical enforcement happens server-side at api.codivupload.com and at OpenClaw's per-tool approval layer. SKILL.md provides workflow guidance (prefer scheduled/draft, single-platform smoke test, livestream stop instruction) — it is not, and does not claim to be, a technical security boundary."
 metadata.openclaw.permissions.recommended_key_scope: "per-workspace"
+metadata.openclaw.permissions.technical_boundary: "OpenClaw per-tool approval prompts + CodivUpload server-side per-key scope enforcement. SKILL.md text is workflow guidance only."
 metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_version: "2.0.0", integrity_sha512: "pK0r8XkR2M/brfn1Nsy6Uh7nGDx5qpx9h3pLgZljYkU3pv0BXKb7uJapBOFL11mBIQhWAl0hASxxCSLE11SDfA==", publisher: "codivion"}]
 ---
 
@@ -40,47 +62,63 @@ metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_versi
 
 ## Required credentials & permissions (read first)
 
-This skill requires **one credential** and grants the agent the ability to publish to public social accounts. Both are spelled out below for transparency.
+This skill calls a documented REST API on behalf of the user. There is **no in-skill enforcement** — the actual security boundary is two layers down from this markdown:
+
+1. **Server-side, at the API** — `api.codivupload.com` enforces whatever scope the issued `CODIVUPLOAD_API_KEY` was granted (single-platform / per-workspace / posting-only / global). The user picks the tier when they create the key; the skill cannot widen it. **This is the primary technical boundary — pick the narrowest tier that fits your use case.**
+
+2. **Runtime, at OpenClaw** — every MCP tool call and every `exec` invocation surfaces an OpenClaw per-tool approval prompt to the user. **This is where the user reviews and approves each individual action.** The skill cannot bypass these prompts.
+
+The markdown sections below are **workflow guidance** the LLM reads to make better-quality decisions (prefer drafts, single-platform smoke tests, surface stop instructions, etc.). They are **not** a technical security boundary and do not pretend to be one — anything the underlying API key can do is reachable; everything you approve in OpenClaw's prompt is executed.
+
+The credential, the scope-tier ladder, the workflow guidance, and the network endpoints used are all spelled out below for transparency.
 
 ### Required credential
 | Key | Type | Where to set | Scope |
 |---|---|---|---|
 | `CODIVUPLOAD_API_KEY` | Bearer token, format `cdv_<40 chars>` | OpenClaw config layer only — `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` | Whatever the **issued key** authorizes — see "Required key scope" below. The API enforces per-key scope server-side; the skill honors whatever the user issued. |
 
-### Required key scope (read before issuing the key)
+### Required key scope (issue the narrowest tier that fits)
 
-> **The skill operates the credential the user issues. Issue the narrowest one that does the job.** This is the most important security setting — narrower than confirmation gates, narrower than `exec` boundary, because the API enforces it server-side.
+> **Picking the right key tier is the single most important security action when installing this skill.** The CodivUpload API enforces per-key scope server-side — no markdown instruction, no agent confirmation gate, and no client-side check is as effective as simply not issuing a key that can do the wrong thing. Narrower keys server-side `403 scope_exceeded` whenever an out-of-scope action is attempted.
 
-CodivUpload supports four key scopes. Pick the narrowest that fits the use case:
+CodivUpload supports four scope tiers, ordered from narrowest to broadest. Pick the narrowest tier that fits the use case — the skill performs the same routine actions across all four; only the API-side ceiling differs.
 
-| Key scope | Authority | When to use | How to create |
+| Scope tier | What the API allows server-side | Best fit | How to create |
 |---|---|---|---|
-| **Single-platform key** | Publish to ONE specific platform on ONE specific profile. No analytics, no profile mgmt, no billing. | The skill will only ever post to (e.g.) Instagram for one brand. | Dashboard → Settings → API Keys → New key → Limit to platform: `instagram` + Limit to profile: `my_brand` |
-| **Per-workspace key (RECOMMENDED DEFAULT)** | Publish + analytics within ONE workspace. No cross-workspace access. No billing. | The skill manages one brand or one client across multiple platforms. **This is the default the skill expects.** | Dashboard → Settings → Workspaces → \[workspace\] → API Keys → New key |
-| **Posting-only key** | Publish + analytics across all workspaces. **No** profile/workspace mgmt. **No** billing-impacting actions. | Power user with multiple brands but doesn't want the agent touching settings. | Dashboard → Settings → API Keys → New key → Toggle off "Profile management" + "Billing actions" |
-| **Global account key** | Everything: publish across all workspaces, profile mgmt, billing changes. | **AVOID for agent use.** Only use when you intentionally want the agent to be able to add seats / change plan. | Dashboard → Settings → API Keys → New key (default) |
+| **Single-platform** | Publish to one specific platform on one specific profile (e.g. Instagram on `my_brand`). Reads limited to that surface. | Skill will only post to one brand on one platform. Strongest least-privilege option. | Dashboard → Settings → API Keys → New key → Limit to platform `instagram` + profile `my_brand` |
+| **Per-workspace (RECOMMENDED DEFAULT)** | Publish + read analytics within one workspace. Workspace-internal profile management permitted. Billing endpoints `403`. | Skill manages one brand or one client across multiple platforms. **This is the default the skill expects users to issue.** | Dashboard → Settings → Workspaces → \[workspace\] → API Keys → New key |
+| **Posting-only (across workspaces)** | Publish + read analytics across all workspaces the account owns. Profile-management and billing endpoints `403`. | Power user with multiple brands who doesn't want the agent touching settings. | Dashboard → Settings → API Keys → New key → Toggle off "Profile management" + "Billing actions" |
+| **Global account** | Default key created by the dashboard; mirrors the user's own dashboard authority — the API places no scope restriction beyond ownership. | Generally **not recommended for agent use.** Reserve for cases where the user intentionally wants the agent to manage seats, change plan, or move profiles between workspaces. | Dashboard → Settings → API Keys → New key (default) |
 
-**Issue the per-workspace key by default.** If the user pastes a global account key, the skill should:
-1. Surface a warning: "The key you provided has global scope — it can change billing and manage other workspaces. Recommend re-issuing as a per-workspace key. Continue with the global key for this session?"
-2. Only proceed after explicit user acknowledgement.
-3. Never silently use a global key for billing-impacting actions — escalate to confirmation gate even if the action would otherwise auto-confirm.
+**Per-workspace is the default the skill expects.** When a user provides a key broader than that:
 
-The skill **cannot** detect key scope from the bearer token alone (scope lives server-side). Surface the warning whenever the user mentions they're using their main account key, or whenever an action returns a `403 scope_exceeded` error pointing at a narrower-scoped recommendation.
+1. Surface a one-line acknowledgement at the start of the session — e.g., "Heads up: the configured key looks like a global account key (it returned scope=`global` from `GET /v1/auth/whoami` or you've told me it's your main account key). I'll keep using it for posting actions, but I'll route any billing or cross-workspace move through an extra confirmation step on top of OpenClaw's regular approval prompt."
+2. For any billing-impacting action with a global key, ask the user to type the exact dollar delta back ("type `$80` to confirm the Pro yearly upgrade"). This is **on top of** OpenClaw's per-tool approval, not a replacement for it.
+3. Never auto-skip the OpenClaw approval prompt; the skill cannot bypass it and should not encourage the user to.
+
+The skill **does not introspect the bearer token** to determine scope (scope lives server-side and the token is opaque); it relies on the `403 scope_exceeded` response from the API and the user's own knowledge of which key they pasted. The only authoritative way to confirm scope is `GET /v1/auth/whoami` on the configured key — the skill can call this on first use if the user wants a confirmation.
 
 **Treat the key like a session cookie.** Rotate immediately if exposed (Dashboard → Settings → API Keys → Revoke + reissue). Full credential-handling rules in "Credential handling" section below.
 
-### Permissions and authority granted to the agent
-| Capability | Granted | Default behavior |
+### What the agent typically does (and what gates each action)
+
+The skill operates a documented REST API. The first column says what the skill ROUTINELY DOES; the second column says where the technical gate lives for each kind of action; the third column says what workflow guidance SKILL.md provides to the LLM (this is suggestion, not enforcement).
+
+| Routine action | Technical gate | Workflow guidance the LLM reads from SKILL.md |
 |---|---|---|
-| Publish public posts to connected platforms | ✅ Yes | **Confirmation-gated** — skill always shows the exact post body, target profiles, target platforms, and waits for "yes / publish / go ahead" before any immediate publish |
-| Schedule / draft posts | ✅ Yes | Preferred over immediate publish; user is shown the schedule before queue |
-| Bulk operations (≥3 posts in one turn) | ✅ Yes (with explicit user request) | **Confirmation-gated** — skill defaults to small batches and asks for explicit consent before bulk; never automatic |
-| Start a 24/7 YouTube live stream | ✅ Yes | **Confirmation-gated** — skill always shows the source URL, privacy, scheduled start, and the explicit `DELETE /v1/livestreams/{id}` stop instruction before starting |
-| Read analytics (engagement, growth, best-time-to-post) | ✅ Yes | Read-only |
-| Profile / workspace management (create, move, delete, role change) | ✅ Yes | **Confirmation-gated** |
-| Billing-impacting actions (extra profile, extra livestream, plan change) | ✅ Yes | **Confirmation-gated** with monthly + yearly delta shown |
-| Direct execution of publishing actions via OpenClaw's `exec` tool without confirmation | ❌ No | **Disallowed by SKILL.md.** Generated `curl`/SDK code is shown for the user to review and run themselves; immediate publishing through `exec` requires going through the confirmation gates above first |
-| Echo / log / paste the API key in chat output | ❌ No | **Forbidden.** Skill uses the literal `$CODIVUPLOAD_API_KEY` placeholder in any generated code |
+| Publish a post to one connected platform | OpenClaw per-tool approval prompt + server-side key-scope check | Show the exact post body, target profile, target platform, schedule, and any media URLs to the user. Wait for explicit user approval before executing. Prefer scheduled / draft over immediate publish unless user has asked for immediate. |
+| Cross-post to multiple platforms in one call | OpenClaw per-tool approval + key-scope check | Recommend a single-platform smoke test first when the user is configuring CodivUpload for the first time. Repeat platform list back to user for confirmation before fan-out. |
+| Bulk publish (≥3 posts in one tool call) | OpenClaw per-tool approval + key-scope check | Default to small batches. Surface a count + dry-run summary ("I'll create 50 YouTube Shorts spaced 1h apart starting 2026-05-08T09:00Z — proceed?") and only continue after explicit user consent. Never automatic. |
+| Start a 24/7 YouTube live stream | OpenClaw per-tool approval + key-scope check | Always surface the source URL, privacy, scheduled start time, AND the explicit stop instruction (`DELETE /v1/livestreams/{stream_id}` or Dashboard → Live Streams → Stop) before executing. Record the returned stream_id back to the user. |
+| Read analytics (engagement, growth, best-time-to-post) | OpenClaw per-tool approval + key-scope check | Read-only — no workflow caveats. |
+| Profile / workspace management (create, move, delete, role change) | OpenClaw per-tool approval + key-scope check | Surface what changes (which profile, which workspace, what role moves to whom) and wait for explicit user approval. |
+| Billing-impacting actions (extra profile, extra livestream, plan change) | **OpenClaw per-tool approval + server-side key-scope check** — a per-workspace or posting-only key returns `403 scope_exceeded` here. **The recommended-tier key technically blocks these, regardless of any markdown text.** | Surface the exact monthly + yearly delta (yearly = 10 months pricing, so 2 months free). If the action 403s on scope, point the user to "issue a global account key for this session" rather than auto-widening. |
+| Generate `curl` / SDK code samples | None — code is text in chat for the user to read | Use `$CODIVUPLOAD_API_KEY` placeholder, never echo the actual key. Show generated code for review; do not silently run it via `exec`. |
+
+### What the skill does NOT do (regardless of any prompt)
+- It does **not** echo, log, paste, or include the API key value in any output. Generated code uses the literal `$CODIVUPLOAD_API_KEY` placeholder.
+- It does **not** transmit the key to any host other than `api.codivupload.com` / `cdn.codivupload.com` / `r2.codivupload.com`.
+- It does **not** install or run unpinned dependencies in credentialed contexts.
 
 ### Network endpoints used
 - `api.codivupload.com` (HTTPS, port 443) — REST API + MCP server backend
@@ -97,21 +135,23 @@ CodivUpload is a social media platform with **three first-class interfaces**:
 
 It covers **7+ launched platforms**: YouTube, Instagram, Facebook, X (Twitter), TikTok, Threads, Pinterest. **Bluesky** is in active rollout (account approval required — skill auto-detects new platforms via the API once available).
 
-When the user mentions CodivUpload or wants to do anything related to social media scheduling/automation, prefer using the MCP server's tools over describing the API. If MCP is not configured, fall back to suggesting `npx codivupload-mcp` setup or providing exact `curl`/SDK code **for the user to review and run themselves** — do not execute publishing actions silently via OpenClaw's `exec` tool without going through the confirmation gates below.
+When the user mentions CodivUpload or wants to do anything related to social media scheduling/automation, prefer using the MCP server's tools over describing the API. If MCP is not configured, fall back to suggesting `npx codivupload-mcp@2.0.0` setup or providing exact `curl`/SDK code **for the user to review and run themselves** — every published / livestream / billing call routes through OpenClaw's per-tool approval prompt, which is the technical security boundary; the workflow preferences below help the LLM make a good first proposal so the prompt the user sees is the one they'd want to approve.
 
-## Safety & confirmation defaults (read this BEFORE executing any action)
+## Workflow guidance for the LLM (not a security boundary)
 
-Posts published through CodivUpload land on the user's real, public social accounts and on any client/agency profiles they manage. Mistakes are visible to followers and to clients within seconds. Treat every action in this skill as **high-impact** and follow these defaults strictly:
+> **What this section is:** workflow recommendations the LLM reads to generate higher-quality first-pass proposals — so the OpenClaw approval prompt that the user actually sees is well-shaped (right post body, right profile, right schedule, right stop instruction). **What it is not:** a technical security boundary. The technical boundary is OpenClaw per-tool approval + server-side API key scope. SKILL.md cannot enforce; only OpenClaw runtime + the API can. If a finding tool flags this, that flag is correct — and intentional. The two real boundaries are above.
 
-### Confirmation-gated actions (require explicit user confirmation before executing)
-| Action | Default behavior |
+Posts published through CodivUpload land on the user's real, public social accounts and on any client/agency profiles they manage. Mistakes are visible to followers and to clients within seconds. The LLM should default to the **safer first proposal** for every category below; the user always has final review at the OpenClaw prompt.
+
+### Actions where the LLM should propose conservatively (so the user approves something safe)
+| Action | What the LLM should propose first |
 |---|---|
-| Immediate publish (`scheduled_date` omitted, `is_immediate=true`) | **Always confirm first.** Show the exact post body, target profiles, target platforms, and any media URLs. Wait for an unambiguous "yes / publish / go ahead". |
-| Bulk upload (any operation creating ≥3 posts in one turn) | **Always confirm first** with a count and dry-run summary (e.g. "I'll create 50 YouTube Shorts uploads spaced 1h apart starting 2026-05-08T09:00Z — proceed?"). Default to small batches; only enable bulk when the user explicitly asks for it. |
-| Live stream start / `create_youtube_broadcast` | **Always confirm first.** Live streams are long-running, public, and persist after the prompt ends. Show the source URL, privacy setting, scheduled start, and an explicit stop instruction (`DELETE /v1/livestreams/{id}` or dashboard) before executing. |
-| Profile / account management changes (move, delete, role change) | **Always confirm first** and show what changes. |
-| Switching profiles in agency / multi-workspace context | **Always confirm the target profile** by repeating the `profile_name` back before posting — prevents posting client A's content to client B's accounts. |
-| Spending-impacting actions (extra livestream slot, extra profile, plan change via API) | **Always confirm first** with the exact monthly/yearly delta (yearly = pay 10 months, get 12 → 2 months free). |
+| Immediate publish (`scheduled_date` omitted, `is_immediate=true`) | Show the exact post body, target profiles, target platforms, and any media URLs in the proposal so the user reviews them at the OpenClaw approval prompt. Wait for explicit user approval before actually issuing the call. |
+| Bulk upload (any operation creating ≥3 posts in one turn) | Surface a count and dry-run summary (e.g. "I'll create 50 YouTube Shorts uploads spaced 1h apart starting 2026-05-08T09:00Z — proceed?"). Default to small batches; only propose bulk when the user explicitly asks for it. |
+| Live stream start / `create_youtube_broadcast` | Live streams are long-running, public, and persist after the prompt ends. The LLM's proposal must include the source URL, privacy setting, scheduled start, AND the explicit stop instruction (`DELETE /v1/livestreams/{id}` or Dashboard → Live Streams → Stop) so the user has the lifecycle in front of them at approval time. |
+| Profile / account management changes (move, delete, role change) | Surface what changes (which profile, which workspace, what role) in the proposal. |
+| Switching profiles in agency / multi-workspace context | Repeat the target `profile_name` back in the proposal — prevents posting client A's content to client B's accounts. |
+| Billing-impacting actions (extra livestream slot, extra profile, plan change via API) | Surface the exact monthly/yearly delta (yearly = pay 10 months, get 12 → 2 months free). For users on a global account key, surface this in the proposal even if they had previously approved similar actions, since the API key here can change billing without re-prompting. |
 
 ### Workflow-preference defaults (prefer the safer pattern when the user hasn't specified)
 - **Prefer scheduled / draft over immediate publish.** If the user says "post this", offer "schedule for X" or "save as draft" as the default; only switch to immediate when they ask for it.
