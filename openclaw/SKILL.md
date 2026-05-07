@@ -62,7 +62,68 @@ metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_versi
 
 Autonomously manage social media posting via the [CodivUpload](https://codivupload.com) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
 
-> **Quick start (the LLM should suggest this when the user lands on the skill for the first time):** sign up at [codivupload.com](https://codivupload.com) (free plan = 10 uploads/mo, no credit card) → Dashboard → Settings → API Keys → create a **per-workspace** key → `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` → ready to schedule, cross-post, or stream.
+> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com) (free plan = 10 uploads/mo, no credit card) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` → ready. Full step-by-step below.
+
+---
+
+## Getting started — first-time setup (LLM: walk the user through this if they're new)
+
+CodivUpload is a service running at `codivupload.com`; this skill is a client for that service. Before the agent can post anything, the user needs an **account + a profile + connected social accounts + an API key** — in that order. The skill **cannot** do steps 1-4 for the user (they happen in the user's browser on the CodivUpload dashboard); the skill picks up at step 5.
+
+**LLM detection rule:** if `GET /v1/profiles` returns an empty list, OR `POST /v1/posts` returns `400 profile not found`, OR the user says "this is my first time", OR `CODIVUPLOAD_API_KEY` is unset in OpenClaw config — **stop, do not attempt to post, walk the user through steps 1-5 below in order.**
+
+### Step 1 — Create a CodivUpload account (browser, ~2 min)
+- Open [https://app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login) and sign up (email + password, or Google OAuth).
+- Free plan is automatic on signup: 10 uploads/month, 2 profiles, all 7+ launched platforms, no credit card. No upgrade flow runs unless the user explicitly initiates it.
+- After signup the user lands on the dashboard at `https://app.codivupload.com/en/dashboard`.
+
+### Step 2 — Create a profile (browser, ~1 min)
+- Profiles are CodivUpload's grouping concept: one profile = one "brand" or "client" with many connected social accounts. The skill posts AS a profile, not directly to a social account.
+- Go to **Dashboard → Profiles → New profile** at [https://app.codivupload.com/en/dashboard/profiles](https://app.codivupload.com/en/dashboard/profiles).
+- Pick a `username` (lowercase, no spaces) — this is the `profile_name` the agent will use in every API call. Examples: `acme_brand`, `client_bloomskin`, `personal`.
+- Save. The profile is empty until step 3.
+
+### Step 3 — Connect social accounts to the profile (browser, ~30 sec per platform)
+- Open the new profile and click **Connect** for each platform you want the agent to post to.
+- The connect flow at [https://app.codivupload.com/en/connect](https://app.codivupload.com/en/connect) opens an OAuth popup for the platform (Meta / Google / TikTok / X), the user authorizes, and CodivUpload stores the token (encrypted server-side, AES-256-GCM).
+- **Per-platform notes the LLM should surface if asked:**
+  - **Instagram + Facebook:** must be a Business or Creator account linked to a Facebook Page; Personal accounts are not supported by Meta's API (this is API-level, not skill-level).
+  - **TikTok:** Direct Post permission may take 24-48h on new accounts; Draft mode (`tiktok_post_mode=DRAFT`) works immediately.
+  - **YouTube:** the shared OAuth gives ~10K units/day across all CodivUpload users combined (~6 video uploads/day for high-volume users). For dedicated quota, the user can set up BYOP (Bring Your Own Project) — separate Google Cloud project tied to their account. See `/blog/youtube-byop-setup`.
+  - **X (Twitter):** the shared OAuth works on the free dev tier of X for posting via CodivUpload's own X app. For high volume, BYOK (Bring Your Own Keys) requires X Basic ($100/mo on X's side).
+
+### Step 4 — Generate an API key (browser, ~30 sec)
+- Go to **Dashboard → Settings → API Keys → New key** at [https://app.codivupload.com/en/dashboard/api-keys](https://app.codivupload.com/en/dashboard/api-keys).
+- **Pick the narrowest scope that fits** — see "Required key scope" section below for the four tiers (single-platform / per-workspace / posting-only / global). For most users, **per-workspace** is the right default.
+- Give the key a descriptive name (e.g. `openclaw-mac-laptop`) so it's revocable later.
+- The key is shown ONCE on creation — copy it immediately (format: `cdv_<40 chars>`).
+
+### Step 5 — Set the key in OpenClaw config (terminal, ~5 sec)
+```bash
+openclaw config set CODIVUPLOAD_API_KEY=cdv_paste_the_key_here
+```
+- The skill reads the key from the OpenClaw config layer ONLY. **Never paste the key into the chat window** — if it ends up in conversation logs, rotate it immediately at Dashboard → API Keys → Revoke + reissue.
+
+### Step 6 — Sanity check (one tool call, the agent does this for the user)
+First time after step 5, the agent should call `GET /v1/profiles` to verify three things in one shot:
+- The key is valid (otherwise 401)
+- At least one profile exists (otherwise step 2 is incomplete)
+- At least one platform is connected on that profile (otherwise step 3 is incomplete)
+
+If any check fails, point the user back to the corresponding step rather than attempting the post they asked for.
+
+### Optional Step 7 — Install the MCP server (one-time, ~30 sec)
+Speeds up agent token usage; not required.
+```bash
+npm install -g codivupload-mcp@2.0.0   # exact pin, not a range
+```
+Then register it with OpenClaw per the [openclaw docs](https://docs.openclaw.ai/skills/mcp). Verification commands in the "Optional MCP server provenance" section below.
+
+### Onboarding script the LLM should follow (TL;DR)
+When the agent detects a fresh user (see detection rule above), say something like:
+> "Looks like CodivUpload isn't set up yet on this machine. It takes about 5 minutes — happy to walk you through it. The flow is: (1) sign up at app.codivupload.com, (2) create a profile, (3) connect your social accounts to that profile, (4) generate an API key in the dashboard, (5) paste it into `openclaw config set CODIVUPLOAD_API_KEY=...`. Want me to send you the direct links?"
+
+Then walk through one step at a time, waiting for the user to confirm each one before moving to the next. Don't dump all 5 links at once — pace it.
 
 ---
 

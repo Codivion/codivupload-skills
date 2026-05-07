@@ -8,7 +8,51 @@ Autonomously manage social media posting via the [CodivUpload](https://codivuplo
 [![MCP](https://img.shields.io/badge/MCP-supported-violet)](https://www.npmjs.com/package/codivupload-mcp)
 [![Get an API key](https://img.shields.io/badge/Get_API_key-codivupload.com-indigo)](https://app.codivupload.com)
 
-> **Quick start:** sign up at [codivupload.com](https://codivupload.com) (free plan = 10 uploads/mo, no credit card) → Dashboard → Settings → API Keys → create a **per-workspace** key → `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` → ask your agent "schedule this video to TikTok and Instagram for tomorrow at 9am".
+> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com) (free plan = 10 uploads/mo, no credit card) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` → ready. Full step-by-step in the Setup section below.
+
+---
+
+## Setup — your first 5 minutes
+
+CodivUpload is a service running at `codivupload.com`; this skill is the OpenClaw client for that service. Before the agent can post anything, you need an **account + a profile + connected social accounts + an API key**, in that order. Steps 1-4 happen in your browser on the dashboard; step 5 is one terminal command.
+
+### 1. Create a CodivUpload account
+Sign up at **[app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login)** (email + password, or Google OAuth). Free plan is automatic on signup — 10 uploads/month, 2 profiles, all 7+ launched platforms, no credit card. ~2 min.
+
+### 2. Create a profile
+Profiles are CodivUpload's grouping concept: one profile = one brand or client, with many social accounts attached. The skill posts AS a profile (not directly to a social account).
+
+Go to **Dashboard → Profiles → New profile** at **[app.codivupload.com/en/dashboard/profiles](https://app.codivupload.com/en/dashboard/profiles)**. Pick a `username` (lowercase, no spaces) — this is the `profile_name` the agent will use. Examples: `acme_brand`, `client_bloomskin`, `personal`. ~1 min.
+
+### 3. Connect social accounts to the profile
+Open the profile and click **Connect** next to each platform you want the agent to post to. The OAuth popup at **[app.codivupload.com/en/connect](https://app.codivupload.com/en/connect)** authorizes the platform; CodivUpload stores the token AES-256-GCM-encrypted server-side. ~30 sec per platform.
+
+**Per-platform notes:**
+- **Instagram + Facebook:** must be a Business or Creator account linked to a Facebook Page (Meta API limitation — Personal accounts can't post via any third-party tool).
+- **TikTok:** Direct Post permission may take 24-48h on new accounts; Draft mode (`tiktok_post_mode=DRAFT`) works immediately.
+- **YouTube:** the shared OAuth covers ~10K units/day across all CodivUpload users combined. For dedicated quota, set up [BYOP](https://codivupload.com/blog/youtube-byop-setup) — your own Google Cloud project tied to your account.
+- **X (Twitter):** shared OAuth works on X's free dev tier via CodivUpload's own X app. For high volume, [BYOK](https://codivupload.com/blog/x-byok-setup) requires X Basic ($100/mo on X's side).
+
+### 4. Generate an API key
+Go to **Dashboard → Settings → API Keys → New key** at **[app.codivupload.com/en/dashboard/api-keys](https://app.codivupload.com/en/dashboard/api-keys)**. Pick the narrowest scope that fits (see [Configuration](#configuration) below — for most users, **per-workspace** is the right default). Give the key a descriptive name (e.g. `openclaw-mac-laptop`) so it's easy to revoke later. The key shows **once** on creation — copy it immediately (format: `cdv_<40 chars>`). ~30 sec.
+
+### 5. Set the key in OpenClaw config
+```bash
+openclaw config set CODIVUPLOAD_API_KEY=cdv_paste_the_key_here
+```
+The skill reads the key from this config layer only. Never paste the key into the chat window with your AI agent — if it ends up in chat logs, rotate it from Dashboard → API Keys → Revoke + reissue. ~5 sec.
+
+### 6. First prompt
+Try a no-op verification first — ask your agent:
+> "List my CodivUpload profiles and which platforms are connected on each."
+
+This calls `GET /v1/profiles` once and tells you in one shot whether the key is valid, whether the profile exists, and which platforms are wired up. From there, real posting prompts work — see [Usage examples](#usage-examples) below.
+
+### Optional — install the MCP server
+Speeds up agent token usage; the skill works without it.
+```bash
+npm install -g codivupload-mcp@2.0.0   # exact pin
+```
 
 ---
 
