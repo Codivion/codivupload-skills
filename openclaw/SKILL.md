@@ -100,7 +100,7 @@ CodivUpload is a service running at `codivupload.com`; this skill is a client fo
 
 ### Step 5 — Set the key in OpenClaw config (terminal, ~5 sec)
 ```bash
-openclaw config set CODIVUPLOAD_API_KEY=cdv_paste_the_key_here
+openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>
 ```
 - The skill reads the key from the OpenClaw config layer ONLY. **Never paste the key into the chat window** — if it ends up in conversation logs, rotate it immediately at Dashboard → API Keys → Revoke + reissue.
 
@@ -274,7 +274,7 @@ Posts published through CodivUpload land on the user's real, public social accou
 
 Set via OpenClaw config:
 ```bash
-openclaw config set CODIVUPLOAD_API_KEY=cdv_your_actual_key_here
+openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>
 ```
 
 The skill will read it from the OpenClaw config layer; never hardcode the key in chat or in skill files.

@@ -38,7 +38,7 @@ Go to **Dashboard → Settings → API Keys → New key** at **[app.codivupload.
 
 ### 5. Set the key in OpenClaw config
 ```bash
-openclaw config set CODIVUPLOAD_API_KEY=cdv_paste_the_key_here
+openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>
 ```
 The skill reads the key from this config layer only. Never paste the key into the chat window with your AI agent — if it ends up in chat logs, rotate it from Dashboard → API Keys → Revoke + reissue. ~5 sec.
 
@@ -156,7 +156,7 @@ The skill works **without** the MCP server (it falls back to direct REST API + t
 Set your CodivUpload API key in OpenClaw config (this is the only place the skill reads it from — the skill never asks for the key in chat and never echoes it back):
 
 ```bash
-openclaw config set CODIVUPLOAD_API_KEY=cdv_your_api_key_here
+openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>
 ```
 
 ### Issue the **narrowest** key the skill needs (this is the most important security setting)
