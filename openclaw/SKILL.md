@@ -25,28 +25,15 @@ description: |
   Triggers on any platform name combined with automation, API,
   scheduling, posting, content management, or live stream intent.
 
-  Credentials & safety boundary (read before installing):
-  Requires CODIVUPLOAD_API_KEY (bearer token, format cdv_<40 chars>) —
-  set via `openclaw config set CODIVUPLOAD_API_KEY=cdv_…`, never paste it
-  in chat. Recommended key scope is **per-workspace** (CodivUpload
-  supports single-platform / per-workspace / posting-only narrowing tiers
-  via Dashboard → Settings → API Keys); avoid global account keys for
-  agent use. Optional companion package `codivupload-mcp` is a credentialed
-  runtime — install ONLY with an exact version pin
-  (`npm install -g codivupload-mcp@2.0.0`), verify publisher (`codivion
-  <accounts@codivion.com>`) and integrity (sha512
-  `pK0r8XkR2M/brfn1Nsy6Uh7nGDx5qpx9h3pLgZljYkU3pv0BXKb7uJapBOFL11mBIQhWAl0hASxxCSLE11SDfA==`)
-  before relying on it; never run `npx -y` against floating ranges. The
-  skill works fully without the MCP server (REST API + TypeScript / Python
-  SDKs). Workflow guidance baked into SKILL.md routes the agent toward
-  scheduled / draft modes over immediate publish, single-platform smoke
-  tests before bulk fan-out, test profiles before production, and surfaces
-  the explicit `DELETE /v1/livestreams/{id}` stop instruction whenever a
-  livestream is started — but the **technical security boundary is
-  OpenClaw's per-tool approval prompts and the user's own review of every
-  proposed publish, bulk operation, livestream start, profile change, and
-  billing-impacting action**, not the markdown text. Approve only what
-  you've reviewed.
+  Setup (5 minutes, browser): sign up at app.codivupload.com → create a
+  profile → connect social accounts via OAuth → generate an API key with
+  the narrowest scope that fits → set it via `openclaw config set
+  CODIVUPLOAD_API_KEY=...`. Recommended scope is per-workspace (CodivUpload
+  exposes narrowing tiers in Dashboard → Settings → API Keys). Optional
+  companion: `codivupload-mcp@2.0.0` (exact pin, verify publisher +
+  integrity before installing). Skill works fully without the MCP server.
+  See SKILL.md body for the full setup walk-through, scope tier ladder,
+  and OpenClaw approval-prompt-driven workflow guidance.
 metadata.openclaw.os: ["darwin", "linux", "windows"]
 metadata.openclaw.requires.bins: ["node", "npx", "curl"]
 metadata.openclaw.requires.config: ["CODIVUPLOAD_API_KEY"]
