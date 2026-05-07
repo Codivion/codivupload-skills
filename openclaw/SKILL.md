@@ -47,9 +47,9 @@ metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_versi
 
 # CodivUpload Social Manager (via codivupload.com)
 
-Autonomously manage social media posting via the [CodivUpload](https://codivupload.com) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
+Autonomously manage social media posting via the [CodivUpload](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-hero-product-link) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
 
-> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com) (free plan = 10 uploads/mo, no credit card) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` → ready. Full step-by-step below.
+> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-quick-start) (free plan = 10 uploads/mo, no credit card) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>` → ready. Full step-by-step below.
 
 ---
 
@@ -60,19 +60,19 @@ CodivUpload is a service running at `codivupload.com`; this skill is a client fo
 **LLM detection rule:** if `GET /v1/profiles` returns an empty list, OR `POST /v1/posts` returns `400 profile not found`, OR the user says "this is my first time", OR `CODIVUPLOAD_API_KEY` is unset in OpenClaw config — **stop, do not attempt to post, walk the user through steps 1-5 below in order.**
 
 ### Step 1 — Create a CodivUpload account (browser, ~2 min)
-- Open [https://app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login) and sign up (email + password, or Google OAuth).
+- Open [app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-signup) and sign up (email + password, or Google OAuth).
 - Free plan is automatic on signup: 10 uploads/month, 2 profiles, all 7+ launched platforms, no credit card. No upgrade flow runs unless the user explicitly initiates it.
-- After signup the user lands on the dashboard at `https://app.codivupload.com/en/dashboard`.
+- After signup the user lands on the dashboard.
 
 ### Step 2 — Create a profile (browser, ~1 min)
 - Profiles are CodivUpload's grouping concept: one profile = one "brand" or "client" with many connected social accounts. The skill posts AS a profile, not directly to a social account.
-- Go to **Dashboard → Profiles → New profile** at [https://app.codivupload.com/en/dashboard/profiles](https://app.codivupload.com/en/dashboard/profiles).
+- Go to **Dashboard → Profiles → New profile** at [app.codivupload.com/en/dashboard/profiles](https://app.codivupload.com/en/dashboard/profiles?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-2-profile-create).
 - Pick a `username` (lowercase, no spaces) — this is the `profile_name` the agent will use in every API call. Examples: `acme_brand`, `client_bloomskin`, `personal`.
 - Save. The profile is empty until step 3.
 
 ### Step 3 — Connect social accounts to the profile (browser, ~30 sec per platform)
-- Open the new profile and click **Connect** for each platform you want the agent to post to.
-- The connect flow at [https://app.codivupload.com/en/connect](https://app.codivupload.com/en/connect) opens an OAuth popup for the platform (Meta / Google / TikTok / X), the user authorizes, and CodivUpload stores the token (encrypted server-side, AES-256-GCM).
+- Open your newly-created profile from [app.codivupload.com/en/dashboard/profiles/all](https://app.codivupload.com/en/dashboard/profiles/all?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-3-profile-list).
+- On the profile detail screen, click each platform's logo (YouTube, Instagram, Facebook, X, TikTok, Threads, Pinterest) you want the agent to post to. An OAuth popup for that platform (Meta / Google / TikTok / X) opens, the user authorizes, and CodivUpload stores the token (encrypted server-side, AES-256-GCM).
 - **Per-platform notes the LLM should surface if asked:**
   - **Instagram + Facebook:** must be a Business or Creator account linked to a Facebook Page; Personal accounts are not supported by Meta's API (this is API-level, not skill-level).
   - **TikTok:** Direct Post permission may take 24-48h on new accounts; Draft mode (`tiktok_post_mode=DRAFT`) works immediately.
@@ -80,7 +80,7 @@ CodivUpload is a service running at `codivupload.com`; this skill is a client fo
   - **X (Twitter):** the shared OAuth works on the free dev tier of X for posting via CodivUpload's own X app. For high volume, BYOK (Bring Your Own Keys) requires X Basic ($100/mo on X's side).
 
 ### Step 4 — Generate an API key (browser, ~30 sec)
-- Go to **Dashboard → Settings → API Keys → New key** at [https://app.codivupload.com/en/dashboard/api-keys](https://app.codivupload.com/en/dashboard/api-keys).
+- Go to **Dashboard → Settings → API Keys → New key** at [app.codivupload.com/en/dashboard/api-keys](https://app.codivupload.com/en/dashboard/api-keys?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-4-api-key-create).
 - **Pick the narrowest scope that fits** — see "Required key scope" section below for the four tiers (single-platform / per-workspace / posting-only / global). For most users, **per-workspace** is the right default.
 - Give the key a descriptive name (e.g. `openclaw-mac-laptop`) so it's revocable later.
 - The key is shown ONCE on creation — copy it immediately (format: `cdv_<40 chars>`).
@@ -666,7 +666,7 @@ const post = await client.posts.create({
 
 - **Instagram** — Personal accounts NOT supported; account must be Business or Creator linked to a Facebook Page
 - **TikTok** — `tiktok_disable_*` (not `tiktok_allow_*`); Direct Post permission is account-scoped and may take 24-48h on new accounts
-- **YouTube** — Free shared quota = 10,000 units/day = ~6 video uploads per day across CodivUpload's entire user base. For higher volume, set up BYOP (Bring Your Own Project): https://codivupload.com/blog/youtube-byop-setup
+- **YouTube** — Free shared quota = 10,000 units/day = ~6 video uploads per day across CodivUpload's entire user base. For higher volume, set up BYOP (Bring Your Own Project): [codivupload.com/blog/youtube-byop-setup](https://codivupload.com/blog/youtube-byop-setup?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=byop-info)
 - **X (Twitter)** — Free dev tier doesn't include write permissions. Either use CodivUpload's shared OAuth (works on free tier of CodivUpload via shared X app) or set up BYOK with paid X Basic ($100/mo)
 - **YouTube Shorts** — `youtube_type=shorts` triggers Shorts classification; custom thumbnails are NOT supported by YouTube for Shorts (the `youtube_thumbnail_url` field is silently dropped for Shorts)
 - **Tags 500-char rule** — YouTube's tag list has a 500-char total limit including tag separators and quote-marks for multi-word tags. CodivUpload sanitizes automatically; truncates from the end of the array if needed
@@ -705,9 +705,9 @@ When the user asks for pricing, quote **both monthly and yearly** with the savin
 
 ## References
 
-- Website — https://codivupload.com
+- Website — [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=references-website)
 - Live OpenAPI spec — https://api.codivupload.com/public-openapi.json
-- Interactive API docs — https://docs.codivupload.com
+- Interactive API docs — [docs.codivupload.com](https://docs.codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=references-docs)
 - llms.txt — https://codivupload.com/llms.txt
 - Full LLM reference — https://codivupload.com/llms-full.txt
 - npm SDK — `npm install codivupload`

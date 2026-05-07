@@ -1,14 +1,24 @@
 # CodivUpload Social Manager (via codivupload.com)
 
-Autonomously manage social media posting via the [CodivUpload](https://codivupload.com) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
+Autonomously manage social media posting via the [CodivUpload](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=readme-hero-product) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
 
 [![ClawHub](https://img.shields.io/badge/ClawHub-codivupload--social--manager-cyan)](https://clawhub.ai/codivion/codivupload-social-manager)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/Codivion/codivupload-skills/blob/main/LICENSE)
-[![Platforms](https://img.shields.io/badge/platforms-7%2B-green)](https://codivupload.com/use-case/ai-skills/openclaw)
+[![Platforms](https://img.shields.io/badge/platforms-7%2B-green)](https://codivupload.com/use-case/ai-skills/openclaw?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=platforms-badge)
 [![MCP](https://img.shields.io/badge/MCP-supported-violet)](https://www.npmjs.com/package/codivupload-mcp)
-[![Get an API key](https://img.shields.io/badge/Get_API_key-codivupload.com-indigo)](https://app.codivupload.com)
+[![Get a free API key](https://img.shields.io/badge/Get_a_free_API_key-codivupload.com-indigo?style=for-the-badge)](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=hero-cta-badge)
 
-> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com) (free plan = 10 uploads/mo, no credit card) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` → ready. Full step-by-step in the Setup section below.
+> **Free to get started, no credit card.** Free plan covers 10 uploads/month across all 7+ launched platforms; paid tiers start at $20/mo (Starter) or $200/yr — yearly billing = 2 months free. [See full pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=pricing-callout).
+
+> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=quick-start-signup) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_API_KEY>` → ready. Full step-by-step in the Setup section below.
+
+### Try this on day 1 (after setup)
+Once you've completed the 5-minute setup, paste these prompts to your OpenClaw agent — each one runs through the full skill:
+
+- *"List my CodivUpload profiles and which platforms are connected on each."* — sanity-checks your key + profile + connected accounts in one call.
+- *"Schedule this video to post on TikTok, Instagram, and YouTube tomorrow at 9am — caption: 'Quick productivity tip'."* — exercises cross-platform fan-out + scheduling.
+- *"What's the best time to post for my Instagram audience?"* — pulls 90-day analytics to recommend a slot.
+- *"Set up a 24/7 YouTube live stream with this MP4 source URL."* — kicks off the BYOP / FFmpeg-relay flow with the explicit stop instruction surfaced.
 
 ---
 
@@ -17,24 +27,24 @@ Autonomously manage social media posting via the [CodivUpload](https://codivuplo
 CodivUpload is a service running at `codivupload.com`; this skill is the OpenClaw client for that service. Before the agent can post anything, you need an **account + a profile + connected social accounts + an API key**, in that order. Steps 1-4 happen in your browser on the dashboard; step 5 is one terminal command.
 
 ### 1. Create a CodivUpload account
-Sign up at **[app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login)** (email + password, or Google OAuth). Free plan is automatic on signup — 10 uploads/month, 2 profiles, all 7+ launched platforms, no credit card. ~2 min.
+Sign up at **[app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=readme-step-1-signup)** (email + password, or Google OAuth). Free plan is automatic on signup — 10 uploads/month, 2 profiles, all 7+ launched platforms, no credit card. ~2 min.
 
 ### 2. Create a profile
 Profiles are CodivUpload's grouping concept: one profile = one brand or client, with many social accounts attached. The skill posts AS a profile (not directly to a social account).
 
-Go to **Dashboard → Profiles → New profile** at **[app.codivupload.com/en/dashboard/profiles](https://app.codivupload.com/en/dashboard/profiles)**. Pick a `username` (lowercase, no spaces) — this is the `profile_name` the agent will use. Examples: `acme_brand`, `client_bloomskin`, `personal`. ~1 min.
+Go to **Dashboard → Profiles → New profile** at **[app.codivupload.com/en/dashboard/profiles](https://app.codivupload.com/en/dashboard/profiles?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=readme-step-2-profile-create)**. Pick a `username` (lowercase, no spaces) — this is the `profile_name` the agent will use. Examples: `acme_brand`, `client_bloomskin`, `personal`. ~1 min.
 
 ### 3. Connect social accounts to the profile
-Open the profile and click **Connect** next to each platform you want the agent to post to. The OAuth popup at **[app.codivupload.com/en/connect](https://app.codivupload.com/en/connect)** authorizes the platform; CodivUpload stores the token AES-256-GCM-encrypted server-side. ~30 sec per platform.
+Open your profile from **[app.codivupload.com/en/dashboard/profiles/all](https://app.codivupload.com/en/dashboard/profiles/all?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=readme-step-3-profile-list)**. On the profile detail screen, click each platform's logo (YouTube, Instagram, Facebook, X, TikTok, Threads, Pinterest) you want the agent to post to. An OAuth popup for that platform authorizes the connection; CodivUpload stores the token AES-256-GCM-encrypted server-side. ~30 sec per platform.
 
 **Per-platform notes:**
 - **Instagram + Facebook:** must be a Business or Creator account linked to a Facebook Page (Meta API limitation — Personal accounts can't post via any third-party tool).
 - **TikTok:** Direct Post permission may take 24-48h on new accounts; Draft mode (`tiktok_post_mode=DRAFT`) works immediately.
-- **YouTube:** the shared OAuth covers ~10K units/day across all CodivUpload users combined. For dedicated quota, set up [BYOP](https://codivupload.com/blog/youtube-byop-setup) — your own Google Cloud project tied to your account.
-- **X (Twitter):** shared OAuth works on X's free dev tier via CodivUpload's own X app. For high volume, [BYOK](https://codivupload.com/blog/x-byok-setup) requires X Basic ($100/mo on X's side).
+- **YouTube:** the shared OAuth covers ~10K units/day across all CodivUpload users combined. For dedicated quota, set up [BYOP](https://codivupload.com/blog/youtube-byop-setup?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=byop-info-readme) — your own Google Cloud project tied to your account.
+- **X (Twitter):** shared OAuth works on X's free dev tier via CodivUpload's own X app. For high volume, [BYOK](https://codivupload.com/blog/x-byok-setup?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=byok-info-readme) requires X Basic ($100/mo on X's side).
 
 ### 4. Generate an API key
-Go to **Dashboard → Settings → API Keys → New key** at **[app.codivupload.com/en/dashboard/api-keys](https://app.codivupload.com/en/dashboard/api-keys)**. Pick the narrowest scope that fits (see [Configuration](#configuration) below — for most users, **per-workspace** is the right default). Give the key a descriptive name (e.g. `openclaw-mac-laptop`) so it's easy to revoke later. The key shows **once** on creation — copy it immediately (format: `cdv_<40 chars>`). ~30 sec.
+Go to **Dashboard → Settings → API Keys → New key** at **[app.codivupload.com/en/dashboard/api-keys](https://app.codivupload.com/en/dashboard/api-keys?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=readme-step-4-api-key-create)**. Pick the narrowest scope that fits (see [Configuration](#configuration) below — for most users, **per-workspace** is the right default). Give the key a descriptive name (e.g. `openclaw-mac-laptop`) so it's easy to revoke later. The key shows **once** on creation — copy it immediately (format: `cdv_<40 chars>`). ~30 sec.
 
 ### 5. Set the key in OpenClaw config
 ```bash
