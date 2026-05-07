@@ -1,29 +1,58 @@
 ---
 name: codivupload-social-manager
 description: |
-  Turn your OpenClaw into an autonomous social media manager. Schedule,
-  publish, cross-post, and analyze content across YouTube, Instagram,
-  Facebook, X (Twitter), TikTok, Threads, and Pinterest from one skill —
-  7+ launched social platforms with Bluesky in active rollout. YouTube
-  scheduler, Instagram Reels publisher, X (Twitter) thread poster with
-  long-form 25K-character support on Premium accounts, Facebook Pages
-  scheduler, TikTok auto-poster with Direct Post + Draft modes, multi-
-  platform cross-poster, Pinterest pin scheduler, Threads conversation
-  scheduler — all in one skill. Power features: BYOP (Bring Your Own
-  Project) for unlimited YouTube upload quota via your own Google Cloud
-  project, BYOK (Bring Your Own Keys) for unlimited X posts via your own
-  X Developer App, 24/7 managed YouTube live streaming with FFmpeg relay
-  (zero CPU on your machine), agency multi-workspace + RBAC with
-  whitelabel branded OAuth, presigned upload flow for media files up to
-  5GB, 50+ platform-specific override parameters, AI caption generation,
-  best-time-to-post analytics, queue + calendar + scheduler, webhook
-  notifications. Use when user wants to schedule social media posts,
-  cross-post to multiple platforms, run a 24/7 livestream, manage YouTube
-  / Instagram / X / TikTok via API, run a multi-tenant agency stack, or
-  wants a Buffer / Hootsuite / Later / Post-Bridge / Upload-Post /
-  Ayrshare alternative with deeper API + agent-native integration.
-  Triggers on any platform name combined with automation, API,
-  scheduling, posting, content management, or live stream intent.
+  Social media scheduler, cross-poster, and content calendar for OpenClaw.
+  Schedule social media posts, publish content, cross-post to multiple
+  platforms, automate social media posting, and manage a content calendar
+  across YouTube, Instagram, Facebook, X (Twitter), TikTok, Threads, and
+  Pinterest from one OpenClaw skill — turn your local AI agent into an
+  autonomous social media manager covering 7+ launched social platforms
+  with Bluesky in active rollout.
+
+  Post to YouTube, post to Instagram, post to Facebook, post to X
+  (Twitter), post to TikTok, post to Threads, post to Pinterest — single-
+  prompt posting and multi-platform cross-posting from one OpenClaw skill.
+  YouTube post automation and YouTube Shorts uploader with bulk publish
+  and BYOP for unlimited YouTube API quota; Instagram post scheduler,
+  Instagram Reels publisher, and Instagram carousel poster with AI
+  captions; Facebook post scheduler and Facebook Page publisher with
+  multi-page agency support; X post scheduler, tweet scheduler, X
+  (Twitter) thread poster, schedule tweets, post a tweet, tweet thread
+  automation — with long-form 25K-character support on X Premium /
+  Premium+ accounts, polls, image and video tweets, quote tweets, and
+  BYOK for dedicated rate limits via your own X Developer App; TikTok
+  post automation with Direct Post and Draft modes; Threads post
+  scheduler; Pinterest pin scheduler;
+  cross-platform publisher and multi-platform poster across all of the
+  above. Content calendar, queue, scheduled posting, draft management,
+  AI caption generation, best-time-to-post analytics, agency multi-
+  workspace + RBAC with whitelabel branded OAuth for client portfolios,
+  presigned upload flow for media up to 5GB, 50+ platform-specific
+  override parameters, webhook notifications, 24/7 managed YouTube live
+  streaming.
+
+  Buffer alternative, Hootsuite alternative, Later alternative, Sprout
+  Social alternative, Post Bridge alternative, Upload-Post alternative,
+  Mixpost alternative, Postiz alternative, Ayrshare alternative — built
+  API-first and agent-native for OpenClaw, Claude, ChatGPT, Cursor, and
+  Zed. Optional MCP server (codivupload-mcp, exact pin 2.0.0) for direct
+  tool access; works fully without it via REST API + official TypeScript
+  and Python SDKs (npm: codivupload, PyPI: codivupload).
+
+  Use when the user asks to post a video, post an image, post a Reel,
+  post a Short, post a tweet, post a thread, schedule a tweet, schedule
+  a thread, schedule social media, cross-post to multiple platforms,
+  automate social posting, run a 24/7 livestream, bulk-upload YouTube
+  Shorts, schedule Instagram Reels, post a TikTok, publish to Facebook
+  Page, post on X (Twitter), set up a multi-tenant agency social media
+  stack, manage a content calendar, or wants an AI-agent-native
+  alternative to Buffer / Hootsuite / Later / Sprout Social / Post-Bridge
+  / Upload-Post / Mixpost / Postiz / Ayrshare. Triggers on any platform
+  name (YouTube, Instagram, Facebook, X, Twitter, TikTok, Threads,
+  Pinterest, Bluesky) or generic terms (post, tweet, thread, reel,
+  short, story, pin) combined with post, posting, scheduling, schedule,
+  cross-post, publish, publisher, automation, automate, content calendar,
+  uploader, upload, or live stream intent.
 
   Setup (5 minutes, browser): sign up at app.codivupload.com → create a
   profile → connect social accounts via OAuth → generate an API key with
@@ -421,7 +450,7 @@ Response:
 }
 ```
 
-**Step 2 — PUT the binary directly to R2 (no auth header — signature is in URL)**
+**Step 2 — PUT the binary directly to the presigned URL (no auth header — signature is in URL)**
 
 ```bash
 curl -X PUT "<presigned_url from step 1>" \
@@ -429,7 +458,7 @@ curl -X PUT "<presigned_url from step 1>" \
   --data-binary "@/path/to/long-form.mp4"
 ```
 
-The byte stream goes browser/agent → Cloudflare R2 directly. No Vercel function, no worker server. Status during upload: `uploading`.
+The byte stream goes browser/agent → CodivUpload's storage backend directly via the presigned URL. No proxying through application servers — large files don't tie up the API. Status during upload: `uploading`.
 
 **Step 3 — Confirm the upload (REQUIRED, do not skip)**
 
@@ -683,12 +712,12 @@ const post = await client.posts.create({
 | AI engineer giving Claude/ChatGPT social posting power | Drop-in MCP server, no custom integration code |
 | YouTube creator hitting shared 10K quota | BYOP for dedicated 10K/day per channel |
 | n8n/Make/Zapier user | One HTTP node replaces nine per-platform integrations |
-| Live streamer running 24/7 | Managed FFmpeg relay, no VPS to operate |
+| Live streamer running 24/7 | Managed live stream relay — no infrastructure to operate, no encoder to babysit |
 | Solo creator on Starter | $20/mo or $200/yr (2 months free yearly), API access + unlimited uploads + analytics + 50 AI generations/month |
 
 ## Pricing summary
 
-Two billing intervals on every paid tier — **monthly** or **yearly**. Yearly = pay for 10 months, get 12 (so **2 months free** vs monthly billing). Source of truth: `frontend/src/config/plans.ts` in the CodivUpload monorepo.
+Two billing intervals on every paid tier — **monthly** or **yearly**. Yearly = pay for 10 months, get 12 (so **2 months free** vs monthly billing). Live rates always reflected on [codivupload.com/pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=pricing-source-of-truth) — quote from there if a user asks for an authoritative current price.
 
 | Plan | Monthly | Yearly (≈ /mo equivalent) | What you get |
 |---|---|---|---|

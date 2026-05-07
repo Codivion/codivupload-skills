@@ -18,7 +18,7 @@ Once you've completed the 5-minute setup, paste these prompts to your OpenClaw a
 - *"List my CodivUpload profiles and which platforms are connected on each."* — sanity-checks your key + profile + connected accounts in one call.
 - *"Schedule this video to post on TikTok, Instagram, and YouTube tomorrow at 9am — caption: 'Quick productivity tip'."* — exercises cross-platform fan-out + scheduling.
 - *"What's the best time to post for my Instagram audience?"* — pulls 90-day analytics to recommend a slot.
-- *"Set up a 24/7 YouTube live stream with this MP4 source URL."* — kicks off the BYOP / FFmpeg-relay flow with the explicit stop instruction surfaced.
+- *"Set up a 24/7 YouTube live stream with this MP4 source URL."* — kicks off the BYOP / managed live stream flow with the explicit stop instruction surfaced.
 
 ---
 
@@ -76,7 +76,7 @@ This skill puts the **most-used platforms** front and center, with deeper integr
 
 ### YouTube
 - **Schedule + publish** long-form videos, Shorts, livestreams
-- **24/7 managed live streams** with FFmpeg relay (zero CPU on your machine)
+- **24/7 managed live streams** with the managed live stream relay (zero CPU on your machine)
 - **BYOP** (Bring Your Own Project) → unlimited daily upload quota via your own Google Cloud project (vs shared 10K-unit limit on rival skills)
 - **Made-For-Kids** (MFK / COPPA) flag handled correctly per upload
 - Premiere scheduling, end screens, cards
@@ -112,7 +112,7 @@ Plus **TikTok, Threads, and Pinterest** all launched with the same depth. **Blue
 |---|---|---|---|
 | **Platform count (launched)** | **7+** | 5 | 3-7 |
 | **MCP server** | ✅ `codivupload-mcp` | ❌ | ❌ |
-| **24/7 live streaming** | ✅ Managed FFmpeg relay | ❌ | ❌ |
+| **24/7 live streaming** | ✅ Managed live stream relay | ❌ | ❌ |
 | **BYOP** (dedicated YouTube quota) | ✅ | ❌ | ❌ |
 | **BYOK** (dedicated X rate limit) | ✅ | ❌ | ❌ |
 | **Agency multi-tenant** | ✅ Workspace cascade + RBAC | ❌ | ❌ |
@@ -121,7 +121,7 @@ Plus **TikTok, Threads, and Pinterest** all launched with the same depth. **Blue
 | **Python SDK** | ✅ PyPI: `codivupload` | ❌ | partial |
 | **Free plan (dashboard only, no API)** | ✅ 10 uploads/mo, all launched platforms, no credit card | varies | varies |
 | **API access starts at** | Starter ($20/mo · $200/yr 2 months free) | varies | varies |
-| **Open-source skill files** | ✅ MIT, fork-friendly | ✅ | ✅ |
+| **MIT-licensed skill artifact** | ✅ Fork-friendly | ✅ | ✅ |
 | **Active development** | Weekly releases | varies | varies |
 
 **Bottom line:** CodivUpload Skill is the only OpenClaw skill that turns your local AI agent into a **full-stack social media operations system** — not just a basic scheduler. Live streams, agency workspaces, BYOP/BYOK, MCP-native — all in one skill.
@@ -132,7 +132,7 @@ When installed, your OpenClaw agent (running locally on Mac / Linux / Windows) g
 
 - **Schedule posts** to any of the 7+ launched social platforms (with Bluesky in active rollout) — platform-specific overrides per platform
 - **Help draft and queue** YouTube Shorts, TikToks, and Reels via the REST API (the skill defaults to scheduled / draft modes; bulk operations require explicit user confirmation up front)
-- **Set up 24/7 YouTube live streams** with managed FFmpeg relay (always confirmation-gated; the skill includes the `DELETE /v1/livestreams/{id}` stop instruction whenever it starts a stream)
+- **Set up 24/7 YouTube live streams** with managed live stream relay (always confirmation-gated; the skill includes the `DELETE /v1/livestreams/{id}` stop instruction whenever it starts a stream)
 - **Pull cross-platform analytics** for engagement, growth, best-time-to-post (read-only)
 - **Manage agency client profiles** with whitelabel branding
 - **Use BYOP** (Bring Your Own Project) for dedicated YouTube quota
@@ -238,15 +238,15 @@ openclaw-skill/
 - **CodivUpload MCP server**: [npmjs.com/package/codivupload-mcp](https://www.npmjs.com/package/codivupload-mcp)
 - **CodivUpload TypeScript SDK**: [npmjs.com/package/codivupload](https://www.npmjs.com/package/codivupload)
 - **CodivUpload Python SDK**: [pypi.org/project/codivupload](https://pypi.org/project/codivupload/)
-- **REST API docs**: [api.codivupload.com](https://api.codivupload.com)
+- **REST API docs**: [docs.codivupload.com](https://docs.codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=related-api-docs)
 - **Claude / ChatGPT / Cursor / Zed Skills version**: see the sibling directories in the same repo — [Codivion/codivupload-skills](https://github.com/Codivion/codivupload-skills) (per-platform skill files for the launched platforms)
 
 ## License
 
-MIT — fork it, adapt it, ship it.
+The skill artifact (this file + SKILL.md) is MIT-licensed — fork it, adapt it, ship it.
 
 ## Support
 
-- Docs: [docs.codivupload.com](https://docs.codivupload.com)
+- Docs: [docs.codivupload.com](https://docs.codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=support-docs)
 - Issues: [github.com/Codivion/codivupload-skills/issues](https://github.com/Codivion/codivupload-skills/issues)
 - Email: support@codivupload.com
