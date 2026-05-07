@@ -1,17 +1,74 @@
 ---
 name: codivupload-social-manager
-description: Social media manager skill for OpenClaw — schedule, publish, cross-post, and manage content on YouTube, Instagram, Facebook, X (Twitter), TikTok, Threads, and Pinterest from one skill. YouTube scheduler, Instagram Reels publisher, X (Twitter) thread poster, Facebook Pages scheduler, TikTok auto-poster, multi-platform cross-poster all in one. 7+ launched social platforms with Bluesky in active rollout. Comprehensive OpenClaw social media management skill — supports MCP server (codivupload-mcp), BYOP for unlimited YouTube quota, BYOK for unlimited X posts, 24/7 managed live streaming, agency multi-workspace + RBAC. Use when user wants to schedule social media posts, cross-post to multiple platforms, manage YouTube / Instagram / X / TikTok via API, or wants a Buffer / Hootsuite / Later / Post-Bridge / Upload-Post / Ayrshare alternative. Triggers on any platform name combined with automation, API, scheduling, posting, or content management intent.
+description: |
+  REQUIRED CREDENTIAL: CODIVUPLOAD_API_KEY (bearer token, format cdv_*). The
+  key delegates posting authority over every social account connected to the
+  user's CodivUpload workspace — treat it as a least-privilege session
+  credential, store only in OpenClaw config, never echo or paste it.
+
+  Social media manager skill for OpenClaw — schedule, publish, cross-post,
+  and manage content on YouTube, Instagram, Facebook, X (Twitter), TikTok,
+  Threads, and Pinterest from one skill. 7+ launched social platforms with
+  Bluesky in active rollout. Supports optional MCP server (codivupload-mcp,
+  pin to ^1.0.0), BYOP for unlimited YouTube quota, BYOK for unlimited X
+  posts, 24/7 managed live streaming, agency multi-workspace + RBAC. All
+  publishing actions (immediate publish, bulk ≥3, livestream start, profile
+  changes, billing) are confirmation-gated by SKILL.md defaults — the skill
+  refuses silent execution of public posts via OpenClaw's exec tool.
+
+  Use when user wants to schedule social media posts, cross-post to multiple
+  platforms, manage YouTube / Instagram / X / TikTok via API, or wants a
+  Buffer / Hootsuite / Later / Post-Bridge / Upload-Post / Ayrshare
+  alternative. Triggers on any platform name combined with automation, API,
+  scheduling, posting, or content management intent.
 metadata.openclaw.os: ["darwin", "linux", "windows"]
 metadata.openclaw.requires.bins: ["node", "npx", "curl"]
 metadata.openclaw.requires.config: ["CODIVUPLOAD_API_KEY"]
+metadata.openclaw.permissions.network: ["api.codivupload.com", "cdn.codivupload.com", "r2.codivupload.com"]
+metadata.openclaw.permissions.scope: "publishing-authority"
+metadata.openclaw.permissions.summary: "Delegates posting authority over the user's CodivUpload-connected social accounts. All publishing/livestream/billing actions confirmation-gated by SKILL.md."
 ---
 
 # CodivUpload — Social Media Publishing Skill
 
+## Required credentials & permissions (read first)
+
+This skill requires **one credential** and grants the agent the ability to publish to public social accounts. Both are spelled out below for transparency.
+
+### Required credential
+| Key | Type | Where to set | Scope |
+|---|---|---|---|
+| `CODIVUPLOAD_API_KEY` | Bearer token, format `cdv_<40 chars>` | OpenClaw config layer only — `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` | **Posting authority** over every social account connected to the user's CodivUpload workspace (YouTube, Instagram, Facebook, X, TikTok, Threads, Pinterest, Bluesky if connected). Read access to analytics. Profile/workspace management. Billing-impacting actions (extra profile, extra livestream, plan change). |
+
+**Least-privilege guidance:** for agency or multi-tenant use, create a **per-workspace** API key rather than a global account key. CodivUpload supports per-workspace keys with cascade RBAC — the skill will respect whatever scope the key was issued with.
+
+**Treat this key like a session cookie.** Anything (or anyone) with the key can post on behalf of the user across every connected social platform. Rotate immediately if exposed (Dashboard → Settings → API Keys → Revoke + reissue). Full credential-handling rules in "Credential handling" section below.
+
+### Permissions and authority granted to the agent
+| Capability | Granted | Default behavior |
+|---|---|---|
+| Publish public posts to connected platforms | ✅ Yes | **Confirmation-gated** — skill always shows the exact post body, target profiles, target platforms, and waits for "yes / publish / go ahead" before any immediate publish |
+| Schedule / draft posts | ✅ Yes | Preferred over immediate publish; user is shown the schedule before queue |
+| Bulk operations (≥3 posts in one turn) | ✅ Yes (with explicit user request) | **Confirmation-gated** — skill defaults to small batches and asks for explicit consent before bulk; never automatic |
+| Start a 24/7 YouTube live stream | ✅ Yes | **Confirmation-gated** — skill always shows the source URL, privacy, scheduled start, and the explicit `DELETE /v1/livestreams/{id}` stop instruction before starting |
+| Read analytics (engagement, growth, best-time-to-post) | ✅ Yes | Read-only |
+| Profile / workspace management (create, move, delete, role change) | ✅ Yes | **Confirmation-gated** |
+| Billing-impacting actions (extra profile, extra livestream, plan change) | ✅ Yes | **Confirmation-gated** with monthly + yearly delta shown |
+| Direct execution of publishing actions via OpenClaw's `exec` tool without confirmation | ❌ No | **Disallowed by SKILL.md.** Generated `curl`/SDK code is shown for the user to review and run themselves; immediate publishing through `exec` requires going through the confirmation gates above first |
+| Echo / log / paste the API key in chat output | ❌ No | **Forbidden.** Skill uses the literal `$CODIVUPLOAD_API_KEY` placeholder in any generated code |
+
+### Network endpoints used
+- `api.codivupload.com` (HTTPS, port 443) — REST API + MCP server backend
+- `cdn.codivupload.com` and `r2.codivupload.com` (HTTPS, port 443) — media upload + presigned URLs
+
+The skill makes **no inbound connections**, requires no open ports, and contacts no third-party telemetry endpoints.
+
+---
+
 CodivUpload is a social media platform with **three first-class interfaces**:
 1. **Visual dashboard** — drag-drop calendar, AI captions, team workspaces
 2. **REST API** — `https://api.codivupload.com/v1/*` with 50+ platform-specific override params
-3. **MCP server** — `npx codivupload-mcp` adds posting tools to Claude/ChatGPT/Cursor/Zed
+3. **MCP server** — `npx codivupload-mcp` adds posting tools to Claude/ChatGPT/Cursor/Zed (optional, version-pinned)
 
 It covers **7+ launched platforms**: YouTube, Instagram, Facebook, X (Twitter), TikTok, Threads, Pinterest. **Bluesky** is in active rollout (account approval required — skill auto-detects new platforms via the API once available).
 
