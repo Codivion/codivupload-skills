@@ -5,7 +5,7 @@
 [![Platforms](https://img.shields.io/badge/platforms-7%2B-green)]()
 [![MCP](https://img.shields.io/badge/MCP-supported-violet)]()
 
-A comprehensive social media manager skill for OpenClaw. Drop-in OpenClaw skill that turns your local AI assistant into an autonomous social media manager for **YouTube, Instagram, X (Twitter), Facebook, TikTok, Threads, Pinterest, and Bluesky** — **7+ platforms launched**, with LinkedIn, Snapchat, and Google Business Profile in active rollout.
+A comprehensive social media manager skill for OpenClaw. Drop-in OpenClaw skill that turns your local AI assistant into an autonomous social media manager for **YouTube, Instagram, X (Twitter), Facebook, TikTok, Threads, and Pinterest** — **7+ platforms launched** (with Bluesky in active rollout).
 
 ## YouTube · Instagram · X · Facebook — first-class support
 
@@ -41,7 +41,7 @@ This skill puts the **most-used platforms** front and center, with deeper integr
 - Scheduled posts via Meta Graph API (proper, not browser automation)
 - Group posting via authenticated Page admin
 
-Plus **TikTok, Threads, and Pinterest** all launched with the same depth. **Bluesky, LinkedIn, Snapchat, and Google Business Profile** are in active rollout — skill auto-detects new platforms via the API.
+Plus **TikTok, Threads, and Pinterest** all launched with the same depth. **Bluesky** is in active rollout — skill auto-detects new platforms via the API.
 
 ## Why this skill (vs alternatives)
 
@@ -66,15 +66,18 @@ Plus **TikTok, Threads, and Pinterest** all launched with the same depth. **Blue
 
 When installed, your OpenClaw agent (running locally on Mac / Linux / Windows) gains the ability to:
 
-- **Schedule posts** to any of 11 social platforms with platform-specific overrides
-- **Bulk-upload** YouTube Shorts, TikToks, Reels via the REST API
-- **Run 24/7 YouTube live streams** with managed FFmpeg relay
-- **Pull cross-platform analytics** for engagement, growth, best-time-to-post
+- **Schedule posts** to any of the 7+ launched social platforms (with Bluesky in active rollout) — platform-specific overrides per platform
+- **Help draft and queue** YouTube Shorts, TikToks, and Reels via the REST API (the skill defaults to scheduled / draft modes; bulk operations require explicit user confirmation up front)
+- **Set up 24/7 YouTube live streams** with managed FFmpeg relay (always confirmation-gated; the skill includes the `DELETE /v1/livestreams/{id}` stop instruction whenever it starts a stream)
+- **Pull cross-platform analytics** for engagement, growth, best-time-to-post (read-only)
 - **Manage agency client profiles** with whitelabel branding
 - **Use BYOP** (Bring Your Own Project) for dedicated YouTube quota
 - **Use BYOK** (Bring Your Own Keys) for dedicated X rate limits
 
 The skill prefers calling [CodivUpload's MCP server](https://www.npmjs.com/package/codivupload-mcp) when configured, falling back to direct REST API calls otherwise.
+
+### Safety defaults baked into the skill
+SKILL.md ships with a **Safety & confirmation defaults** section (read by the LLM at activation) that requires explicit user confirmation before any immediate publish, bulk operation (≥3 posts), live stream start, profile/account change, or spending-impacting action. The skill prefers scheduled/draft modes over immediate publish, prefers single-platform smoke tests before fan-out, and never logs or echoes the API key. See `SKILL.md` → "Safety & confirmation defaults" for the full list.
 
 ## Installation
 
@@ -83,21 +86,28 @@ The skill prefers calling [CodivUpload's MCP server](https://www.npmjs.com/packa
 mkdir -p ~/.openclaw/workspace/skills/codivupload
 cp SKILL.md ~/.openclaw/workspace/skills/codivupload/SKILL.md
 
-# Optional: also install the MCP server (gives the agent direct tool access)
-npm install -g codivupload-mcp
+# Optional: install the MCP server (gives the agent direct tool access).
+# Pin a known-good major to keep the supply-chain surface predictable —
+# don't track floating `latest` for a credentialed runtime.
+npm install -g codivupload-mcp@^1.0.0   # or pin to an exact version you've validated
+
+# Ad-hoc runs (no global install): always pin the major.
+# npx -y codivupload-mcp@1
 ```
+
+Verify the package before installing: `npm view codivupload-mcp publisher integrity` — publisher should be `Codivion`. The MCP server inherits the API key from your OpenClaw config; it never asks for a separate credential. The skill works **without** the MCP server (it falls back to direct REST API + the official TypeScript / Python SDKs) — install only if you want fewer agent tokens spent on tool descriptions.
 
 ## Configuration
 
-Set your CodivUpload API key in OpenClaw config:
+Set your CodivUpload API key in OpenClaw config (this is the only place the skill reads it from — the skill never asks for the key in chat and never echoes it back):
 
 ```bash
-openclaw config set CODIVUPLOAD_API_KEY=your_api_key_here
+openclaw config set CODIVUPLOAD_API_KEY=cdv_your_api_key_here
 ```
 
-Get your API key from your CodivUpload dashboard → Settings → API Keys.
+Get your API key from your CodivUpload dashboard → Settings → API Keys. **Treat the key like a session cookie** — it delegates posting authority over every connected social account in your CodivUpload workspace. If you ever paste it into chat by mistake, rotate it from Dashboard → API Keys → Revoke + reissue. For agency / multi-tenant use, create a per-workspace key with cascade RBAC (CodivUpload supports this natively). Full credential-handling rules are spelled out in `SKILL.md` → "Credential handling" so the agent enforces them on your behalf.
 
-If you don't have an account yet, sign up at [codivupload.com](https://codivupload.com) — free plan covers 10 uploads / month with all 11 platforms.
+If you don't have an account yet, sign up at [codivupload.com](https://codivupload.com) — free plan covers **10 uploads / month** with all 7+ launched platforms (no credit card). Paid tiers — Starter $20/mo ($200/yr), Pro $40/mo ($400/yr), Business $140/mo ($1,400/yr), Enterprise $400/mo ($4,000/yr) — yearly billing = pay 10 months, get 12 (**2 months free**). Full breakdown: [codivupload.com/pricing](https://codivupload.com/pricing).
 
 ## Usage examples
 
@@ -105,7 +115,7 @@ After installation, you can ask your OpenClaw agent things like:
 
 ```
 "Schedule this video to post on TikTok, Instagram, and YouTube tomorrow at 9am"
-"Cross-post my latest blog announcement to LinkedIn and X"
+"Cross-post my latest blog announcement to X and Threads"
 "Pull engagement stats for my Instagram for the last 30 days"
 "Set up a 24/7 YouTube live stream with this MP4 source"
 "List my connected social profiles"
@@ -125,8 +135,8 @@ OpenClaw's skill system reads the YAML frontmatter to determine **when** to acti
 - Error handling + retry guidance
 
 The agent uses this knowledge to either:
-1. **Call MCP tools directly** if `codivupload-mcp` is registered as an MCP server
-2. **Generate `curl` / SDK code** the agent can execute via OpenClaw's `exec` tool
+1. **Call MCP tools directly** if `codivupload-mcp` is registered as an MCP server (each tool call is subject to OpenClaw's per-tool approval prompt + the skill's confirmation gates).
+2. **Generate `curl` / SDK code for the user to review and run** — the skill's safety defaults instruct the LLM to surface every publish/bulk/livestream command to the user for explicit confirmation before any execution via OpenClaw's `exec` tool. Raw, un-confirmed execution of publishing commands is **disallowed by SKILL.md**.
 
 ## Files in this package
 
@@ -149,7 +159,7 @@ openclaw-skill/
 - **CodivUpload TypeScript SDK**: [npmjs.com/package/codivupload](https://www.npmjs.com/package/codivupload)
 - **CodivUpload Python SDK**: [pypi.org/project/codivupload](https://pypi.org/project/codivupload/)
 - **REST API docs**: [api.codivupload.com](https://api.codivupload.com)
-- **Claude Skills version**: same repo, sibling directories ([generic](https://github.com/Codivion/codivupload-skills/tree/main/generic), [instagram](https://github.com/Codivion/codivupload-skills/tree/main/instagram), [youtube](https://github.com/Codivion/codivupload-skills/tree/main/youtube), [tiktok](https://github.com/Codivion/codivupload-skills/tree/main/tiktok), [x](https://github.com/Codivion/codivupload-skills/tree/main/x), [facebook-linkedin](https://github.com/Codivion/codivupload-skills/tree/main/facebook-linkedin), [agency](https://github.com/Codivion/codivupload-skills/tree/main/agency))
+- **Claude / ChatGPT / Cursor / Zed Skills version**: see the sibling directories in the same repo — [Codivion/codivupload-skills](https://github.com/Codivion/codivupload-skills) (per-platform skill files for the launched platforms)
 
 ## License
 
