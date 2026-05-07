@@ -6,11 +6,11 @@ Autonomously manage social media posting via the [CodivUpload](https://codivuplo
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/Codivion/codivupload-skills/blob/main/LICENSE)
 [![Platforms](https://img.shields.io/badge/platforms-7%2B-green)](https://codivupload.com/use-case/ai-skills/openclaw?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=platforms-badge)
 [![MCP](https://img.shields.io/badge/MCP-supported-violet)](https://www.npmjs.com/package/codivupload-mcp)
-[![Get a free API key](https://img.shields.io/badge/Get_a_free_API_key-codivupload.com-indigo?style=for-the-badge)](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=hero-cta-badge)
+[![Get an API key — Starter $20/mo](https://img.shields.io/badge/Get_an_API_key_%E2%80%94_Starter_%2420%2Fmo-codivupload.com-indigo?style=for-the-badge)](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=hero-cta-badge)
 
-> **Free to get started, no credit card.** Free plan covers 10 uploads/month across all 7+ launched platforms; paid tiers start at $20/mo (Starter) or $200/yr — yearly billing = 2 months free. [See full pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=pricing-callout).
+> **Free dashboard, paid API.** A **Free** CodivUpload account ($0, no credit card) lets you publish from the web dashboard with 10 uploads/month across all 7+ launched platforms. **This OpenClaw skill calls the REST API** — API access starts at the **Starter** plan ($20/mo · $200/yr with 2 months free). [See full pricing →](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=pricing-callout)
 
-> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=quick-start-signup) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_API_KEY>` → ready. Full step-by-step in the Setup section below.
+> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=quick-start-signup), subscribe to Starter, create a profile, connect a social account, generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_API_KEY>` → ready. Full step-by-step in the Setup section below.
 
 ### Try this on day 1 (after setup)
 Once you've completed the 5-minute setup, paste these prompts to your OpenClaw agent — each one runs through the full skill:
@@ -26,8 +26,10 @@ Once you've completed the 5-minute setup, paste these prompts to your OpenClaw a
 
 CodivUpload is a service running at `codivupload.com`; this skill is the OpenClaw client for that service. Before the agent can post anything, you need an **account + a profile + connected social accounts + an API key**, in that order. Steps 1-4 happen in your browser on the dashboard; step 5 is one terminal command.
 
-### 1. Create a CodivUpload account
-Sign up at **[app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=readme-step-1-signup)** (email + password, or Google OAuth). Free plan is automatic on signup — 10 uploads/month, 2 profiles, all 7+ launched platforms, no credit card. ~2 min.
+### 1. Create a CodivUpload account + subscribe to Starter (or higher)
+Sign up at **[app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=readme-step-1-signup)** (email + password, or Google OAuth). The **Free plan** activates automatically — $0, no credit card, 10 uploads/month, dashboard-only. Useful for trying the product through the web app first.
+
+To run this OpenClaw skill (which calls the REST API), upgrade to **Starter** — **$20/mo or $200/yr** (2 months free when billed yearly). API access is included from Starter and above. Subscribe from Dashboard → Subscription, or directly from **[codivupload.com/pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=readme-step-1-upgrade-starter)**. ~2 min total.
 
 ### 2. Create a profile
 Profiles are CodivUpload's grouping concept: one profile = one brand or client, with many social accounts attached. The skill posts AS a profile (not directly to a social account).
@@ -117,7 +119,8 @@ Plus **TikTok, Threads, and Pinterest** all launched with the same depth. **Blue
 | **Whitelabel branded OAuth** | ✅ Pro+ | ❌ | ❌ |
 | **TypeScript SDK** | ✅ npm: `codivupload` | ❌ | partial |
 | **Python SDK** | ✅ PyPI: `codivupload` | ❌ | partial |
-| **Free plan** | ✅ 10 uploads/mo, all launched platforms | varies | varies |
+| **Free plan (dashboard only, no API)** | ✅ 10 uploads/mo, all launched platforms, no credit card | varies | varies |
+| **API access starts at** | Starter ($20/mo · $200/yr 2 months free) | varies | varies |
 | **Open-source skill files** | ✅ MIT, fork-friendly | ✅ | ✅ |
 | **Active development** | Weekly releases | varies | varies |
 
@@ -184,7 +187,7 @@ The CodivUpload API enforces per-key scope **server-side** — pick the narrowes
 
 If you ever paste the key into chat by mistake, rotate it from Dashboard → API Keys → Revoke + reissue. Full credential-handling rules are spelled out in `SKILL.md` → "Required key scope" + "Credential handling" so the agent enforces them on your behalf.
 
-If you don't have an account yet, sign up at [codivupload.com](https://codivupload.com) — free plan covers **10 uploads / month** with all 7+ launched platforms (no credit card). Paid tiers — Starter $20/mo ($200/yr), Pro $40/mo ($400/yr), Business $140/mo ($1,400/yr), Enterprise $400/mo ($4,000/yr) — yearly billing = pay 10 months, get 12 (**2 months free**). Full breakdown: [codivupload.com/pricing](https://codivupload.com/pricing).
+If you don't have an account yet, sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=config-section-signup). The **Free plan** covers **10 uploads/month** via the web dashboard (no credit card, no API). This skill calls the REST API, so you'll need **Starter** or higher — $20/mo or $200/yr with 2 months free. Full tier breakdown on [codivupload.com/pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=config-section-pricing).
 
 ## Usage examples
 

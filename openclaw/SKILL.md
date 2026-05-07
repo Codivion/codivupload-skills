@@ -49,7 +49,7 @@ metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_versi
 
 Autonomously manage social media posting via the [CodivUpload](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-hero-product-link) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
 
-> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-quick-start) (free plan = 10 uploads/mo, no credit card) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>` → ready. Full step-by-step below.
+> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-quick-start), subscribe to **Starter** ($20/mo or $200/yr — 2 months free yearly) for API access, create a profile, connect a social account, generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>` → ready. Full step-by-step below. (Note: this skill calls the CodivUpload REST API; API access starts at the Starter tier. The Free plan is dashboard-only and cannot run this skill.)
 
 ---
 
@@ -59,10 +59,10 @@ CodivUpload is a service running at `codivupload.com`; this skill is a client fo
 
 **LLM detection rule:** if `GET /v1/profiles` returns an empty list, OR `POST /v1/posts` returns `400 profile not found`, OR the user says "this is my first time", OR `CODIVUPLOAD_API_KEY` is unset in OpenClaw config — **stop, do not attempt to post, walk the user through steps 1-5 below in order.**
 
-### Step 1 — Create a CodivUpload account (browser, ~2 min)
-- Open [app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-signup) and sign up (email + password, or Google OAuth).
-- Free plan is automatic on signup: 10 uploads/month, 2 profiles, all 7+ launched platforms, no credit card. No upgrade flow runs unless the user explicitly initiates it.
-- After signup the user lands on the dashboard.
+### Step 1 — Create a CodivUpload account + subscribe to Starter (browser, ~2 min)
+- Open [app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-signup) and sign up (email + password, or Google OAuth). Free plan is automatic on signup but is **dashboard-only** — it does not include API access.
+- **This skill requires API access**, which starts at the **Starter** tier ($20/mo, or $200/yr with 2 months free). Upgrade from Dashboard → Subscription → Starter (or directly from [codivupload.com/pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-upgrade-starter)).
+- The LLM should surface this requirement clearly: "This skill calls the CodivUpload REST API. API access is included from the Starter tier ($20/mo / $200/yr) and above. Free plan users can use the web dashboard but not this skill."
 
 ### Step 2 — Create a profile (browser, ~1 min)
 - Profiles are CodivUpload's grouping concept: one profile = one "brand" or "client" with many connected social accounts. The skill posts AS a profile, not directly to a social account.
@@ -683,7 +683,7 @@ const post = await client.posts.create({
 | YouTube creator hitting shared 10K quota | BYOP for dedicated 10K/day per channel |
 | n8n/Make/Zapier user | One HTTP node replaces nine per-platform integrations |
 | Live streamer running 24/7 | Managed FFmpeg relay, no VPS to operate |
-| Solo creator on free tier | 10 uploads/month free across all launched platforms, no credit card |
+| Solo creator on Starter | $20/mo or $200/yr (2 months free yearly), API access + unlimited uploads + analytics + 50 AI generations/month |
 
 ## Pricing summary
 
@@ -691,7 +691,7 @@ Two billing intervals on every paid tier — **monthly** or **yearly**. Yearly =
 
 | Plan | Monthly | Yearly (≈ /mo equivalent) | What you get |
 |---|---|---|---|
-| **Free** | $0 | $0 | 10 uploads/month, 2 profiles, all 7+ launched platforms, 10 AI generations/month, no credit card |
+| **Free** | $0 | $0 | **Dashboard-only — no API access. This skill cannot run on Free.** 10 uploads/month, 2 profiles, all 7+ launched platforms, 10 AI generations/month, no credit card. |
 | **Starter** | $20/mo | $200/yr (~$16.67/mo · save $40) | 10 profiles, unlimited posts, API access, 50 AI generations/month, email support |
 | **Pro** | $40/mo | $400/yr (~$33.33/mo · save $80) | 25 profiles, 3 team seats, 2 live streams, whitelabel branded OAuth, branded invites, 200 AI generations/month |
 | **Business** | $140/mo | $1,400/yr (~$116.67/mo · save $280) | 75 profiles, 5 seats, 5 live streams, webhook notifications, platform comparison analytics, 1,000 AI generations/month |
