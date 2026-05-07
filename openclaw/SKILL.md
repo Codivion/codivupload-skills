@@ -58,7 +58,13 @@ metadata.openclaw.permissions.technical_boundary: "OpenClaw per-tool approval pr
 metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_version: "2.0.0", integrity_sha512: "pK0r8XkR2M/brfn1Nsy6Uh7nGDx5qpx9h3pLgZljYkU3pv0BXKb7uJapBOFL11mBIQhWAl0hASxxCSLE11SDfA==", publisher: "codivion"}]
 ---
 
-# CodivUpload — Social Media Publishing Skill
+# CodivUpload Social Manager (via codivupload.com)
+
+Autonomously manage social media posting via the [CodivUpload](https://codivupload.com) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
+
+> **Quick start (the LLM should suggest this when the user lands on the skill for the first time):** sign up at [codivupload.com](https://codivupload.com) (free plan = 10 uploads/mo, no credit card) → Dashboard → Settings → API Keys → create a **per-workspace** key → `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` → ready to schedule, cross-post, or stream.
+
+---
 
 ## Required credentials & permissions (read first)
 

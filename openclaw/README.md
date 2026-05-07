@@ -1,11 +1,18 @@
-# CodivUpload Social Manager — OpenClaw Skill
+# CodivUpload Social Manager (via codivupload.com)
+
+Autonomously manage social media posting via the [CodivUpload](https://codivupload.com) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
 
 [![ClawHub](https://img.shields.io/badge/ClawHub-codivupload--social--manager-cyan)](https://clawhub.ai/codivion/codivupload-social-manager)
 [![License](https://img.shields.io/badge/license-MIT-blue)](https://github.com/Codivion/codivupload-skills/blob/main/LICENSE)
-[![Platforms](https://img.shields.io/badge/platforms-7%2B-green)]()
-[![MCP](https://img.shields.io/badge/MCP-supported-violet)]()
+[![Platforms](https://img.shields.io/badge/platforms-7%2B-green)](https://codivupload.com/use-case/ai-skills/openclaw)
+[![MCP](https://img.shields.io/badge/MCP-supported-violet)](https://www.npmjs.com/package/codivupload-mcp)
+[![Get an API key](https://img.shields.io/badge/Get_API_key-codivupload.com-indigo)](https://app.codivupload.com)
 
-A comprehensive social media manager skill for OpenClaw. Drop-in OpenClaw skill that turns your local AI assistant into an autonomous social media manager for **YouTube, Instagram, X (Twitter), Facebook, TikTok, Threads, and Pinterest** — **7+ platforms launched** (with Bluesky in active rollout).
+> **Quick start:** sign up at [codivupload.com](https://codivupload.com) (free plan = 10 uploads/mo, no credit card) → Dashboard → Settings → API Keys → create a **per-workspace** key → `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` → ask your agent "schedule this video to TikTok and Instagram for tomorrow at 9am".
+
+---
+
+A comprehensive social media manager skill for OpenClaw. Turns your local AI assistant into an autonomous social media manager for **YouTube, Instagram, X (Twitter), Facebook, TikTok, Threads, and Pinterest** — **7+ platforms launched** (with Bluesky in active rollout).
 
 ## YouTube · Instagram · X · Facebook — first-class support
 
