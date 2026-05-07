@@ -87,15 +87,18 @@ mkdir -p ~/.openclaw/workspace/skills/codivupload
 cp SKILL.md ~/.openclaw/workspace/skills/codivupload/SKILL.md
 
 # Optional: install the MCP server (gives the agent direct tool access).
-# Pin a known-good major to keep the supply-chain surface predictable —
-# don't track floating `latest` for a credentialed runtime.
-npm install -g codivupload-mcp@^1.0.0   # or pin to an exact version you've validated
+# IMPORTANT: use an EXACT version pin — no caret, no tilde, no `latest`.
+# A credentialed runtime (the MCP server inherits CODIVUPLOAD_API_KEY)
+# should never resolve a floating range.
+npm install -g codivupload-mcp@2.0.0
 
-# Ad-hoc runs (no global install): always pin the major.
-# npx -y codivupload-mcp@1
+# Verify before relying on it:
+npm view codivupload-mcp publisher        # → codivion <accounts@codivion.com>
+npm view codivupload-mcp@2.0.0 dist.integrity
+# expected: sha512-pK0r8XkR2M/brfn1Nsy6Uh7nGDx5qpx9h3pLgZljYkU3pv0BXKb7uJapBOFL11mBIQhWAl0hASxxCSLE11SDfA==
 ```
 
-Verify the package before installing: `npm view codivupload-mcp publisher integrity` — publisher should be `Codivion`. The MCP server inherits the API key from your OpenClaw config; it never asks for a separate credential. The skill works **without** the MCP server (it falls back to direct REST API + the official TypeScript / Python SDKs) — install only if you want fewer agent tokens spent on tool descriptions.
+The skill works **without** the MCP server (it falls back to direct REST API + the official TypeScript / Python SDKs) — install only if you want fewer agent tokens spent on tool descriptions. Skip it to keep the supply-chain surface to zero. **Avoid `npx -y codivupload-mcp` without a pinned exact version** — `-y` auto-accepts whatever the registry resolves, which is a bad fit for a credentialed runtime.
 
 ## Configuration
 
@@ -105,7 +108,20 @@ Set your CodivUpload API key in OpenClaw config (this is the only place the skil
 openclaw config set CODIVUPLOAD_API_KEY=cdv_your_api_key_here
 ```
 
-Get your API key from your CodivUpload dashboard → Settings → API Keys. **Treat the key like a session cookie** — it delegates posting authority over every connected social account in your CodivUpload workspace. If you ever paste it into chat by mistake, rotate it from Dashboard → API Keys → Revoke + reissue. For agency / multi-tenant use, create a per-workspace key with cascade RBAC (CodivUpload supports this natively). Full credential-handling rules are spelled out in `SKILL.md` → "Credential handling" so the agent enforces them on your behalf.
+### Issue the **narrowest** key the skill needs (this is the most important security setting)
+
+The CodivUpload API enforces per-key scope **server-side** — pick the narrowest tier that fits your use case:
+
+| Tier | Authority | When to use | How to create |
+|---|---|---|---|
+| **Single-platform** | Publish to ONE platform on ONE profile. No analytics, no profile mgmt, no billing. | Skill will only post to (e.g.) Instagram for one brand. | Dashboard → API Keys → New → Limit platform + profile |
+| **Per-workspace (RECOMMENDED DEFAULT)** | Publish + analytics within ONE workspace. No cross-workspace, no billing. | Skill manages one brand or one client across multiple platforms. | Dashboard → Workspaces → \[workspace\] → API Keys → New |
+| **Posting-only** | Publish + analytics across all workspaces. **No** profile mgmt, **no** billing. | Power user with multiple brands but doesn't want the agent touching settings. | Dashboard → API Keys → New → Toggle off "Profile management" + "Billing actions" |
+| **Global account key** | Everything: publish across all workspaces, profile mgmt, billing changes. | **Avoid for agent use.** Only when you intentionally want the agent to add seats / change plan. | Dashboard → API Keys → New (default) |
+
+**The skill expects a per-workspace key by default.** If you provide a global account key, the skill will warn you before allowing any billing-impacting or cross-workspace action and require explicit acknowledgement. This is the only effective mitigation against an over-broad credential — confirmation gates are second-line; **scope is first-line**.
+
+If you ever paste the key into chat by mistake, rotate it from Dashboard → API Keys → Revoke + reissue. Full credential-handling rules are spelled out in `SKILL.md` → "Required key scope" + "Credential handling" so the agent enforces them on your behalf.
 
 If you don't have an account yet, sign up at [codivupload.com](https://codivupload.com) — free plan covers **10 uploads / month** with all 7+ launched platforms (no credit card). Paid tiers — Starter $20/mo ($200/yr), Pro $40/mo ($400/yr), Business $140/mo ($1,400/yr), Enterprise $400/mo ($4,000/yr) — yearly billing = pay 10 months, get 12 (**2 months free**). Full breakdown: [codivupload.com/pricing](https://codivupload.com/pricing).
 

@@ -1,20 +1,25 @@
 ---
 name: codivupload-social-manager
 description: |
-  REQUIRED CREDENTIAL: CODIVUPLOAD_API_KEY (bearer token, format cdv_*). The
-  key delegates posting authority over every social account connected to the
-  user's CodivUpload workspace — treat it as a least-privilege session
-  credential, store only in OpenClaw config, never echo or paste it.
+  REQUIRED CREDENTIAL: CODIVUPLOAD_API_KEY (bearer token, format cdv_*).
+  RECOMMENDED KEY SCOPE: per-workspace key (NOT a global account key) —
+  CodivUpload supports four scope tiers (single-platform, per-workspace,
+  posting-only, global); skill expects per-workspace by default and warns
+  before letting a global key trigger billing or cross-workspace actions.
+  Store the key only in OpenClaw config, never echo or paste it, rotate
+  immediately if exposed.
 
   Social media manager skill for OpenClaw — schedule, publish, cross-post,
   and manage content on YouTube, Instagram, Facebook, X (Twitter), TikTok,
   Threads, and Pinterest from one skill. 7+ launched social platforms with
-  Bluesky in active rollout. Supports optional MCP server (codivupload-mcp,
-  pin to ^1.0.0), BYOP for unlimited YouTube quota, BYOK for unlimited X
-  posts, 24/7 managed live streaming, agency multi-workspace + RBAC. All
-  publishing actions (immediate publish, bulk ≥3, livestream start, profile
-  changes, billing) are confirmation-gated by SKILL.md defaults — the skill
-  refuses silent execution of public posts via OpenClaw's exec tool.
+  Bluesky in active rollout. Optional MCP server (codivupload-mcp, install
+  with EXACT pin codivupload-mcp@2.0.0, never @latest or @^), BYOP for
+  unlimited YouTube quota, BYOK for unlimited X posts, 24/7 managed live
+  streaming with explicit DELETE /v1/livestreams/{id} stop instruction,
+  agency multi-workspace + RBAC. All publishing actions (immediate publish,
+  bulk ≥3, livestream start, profile changes, billing) are
+  confirmation-gated by SKILL.md defaults — the skill refuses silent
+  execution of public posts via OpenClaw's exec tool.
 
   Use when user wants to schedule social media posts, cross-post to multiple
   platforms, manage YouTube / Instagram / X / TikTok via API, or wants a
@@ -25,8 +30,10 @@ metadata.openclaw.os: ["darwin", "linux", "windows"]
 metadata.openclaw.requires.bins: ["node", "npx", "curl"]
 metadata.openclaw.requires.config: ["CODIVUPLOAD_API_KEY"]
 metadata.openclaw.permissions.network: ["api.codivupload.com", "cdn.codivupload.com", "r2.codivupload.com"]
-metadata.openclaw.permissions.scope: "publishing-authority"
-metadata.openclaw.permissions.summary: "Delegates posting authority over the user's CodivUpload-connected social accounts. All publishing/livestream/billing actions confirmation-gated by SKILL.md."
+metadata.openclaw.permissions.scope: "publishing-authority (per-workspace key recommended; refuse silent billing/cross-workspace actions when key is global)"
+metadata.openclaw.permissions.summary: "Delegates posting authority over CodivUpload-connected social accounts. Default expectation = per-workspace key. All publishing/livestream/billing actions confirmation-gated by SKILL.md."
+metadata.openclaw.permissions.recommended_key_scope: "per-workspace"
+metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_version: "2.0.0", integrity_sha512: "pK0r8XkR2M/brfn1Nsy6Uh7nGDx5qpx9h3pLgZljYkU3pv0BXKb7uJapBOFL11mBIQhWAl0hASxxCSLE11SDfA==", publisher: "codivion"}]
 ---
 
 # CodivUpload — Social Media Publishing Skill
@@ -38,11 +45,29 @@ This skill requires **one credential** and grants the agent the ability to publi
 ### Required credential
 | Key | Type | Where to set | Scope |
 |---|---|---|---|
-| `CODIVUPLOAD_API_KEY` | Bearer token, format `cdv_<40 chars>` | OpenClaw config layer only — `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` | **Posting authority** over every social account connected to the user's CodivUpload workspace (YouTube, Instagram, Facebook, X, TikTok, Threads, Pinterest, Bluesky if connected). Read access to analytics. Profile/workspace management. Billing-impacting actions (extra profile, extra livestream, plan change). |
+| `CODIVUPLOAD_API_KEY` | Bearer token, format `cdv_<40 chars>` | OpenClaw config layer only — `openclaw config set CODIVUPLOAD_API_KEY=cdv_…` | Whatever the **issued key** authorizes — see "Required key scope" below. The API enforces per-key scope server-side; the skill honors whatever the user issued. |
 
-**Least-privilege guidance:** for agency or multi-tenant use, create a **per-workspace** API key rather than a global account key. CodivUpload supports per-workspace keys with cascade RBAC — the skill will respect whatever scope the key was issued with.
+### Required key scope (read before issuing the key)
 
-**Treat this key like a session cookie.** Anything (or anyone) with the key can post on behalf of the user across every connected social platform. Rotate immediately if exposed (Dashboard → Settings → API Keys → Revoke + reissue). Full credential-handling rules in "Credential handling" section below.
+> **The skill operates the credential the user issues. Issue the narrowest one that does the job.** This is the most important security setting — narrower than confirmation gates, narrower than `exec` boundary, because the API enforces it server-side.
+
+CodivUpload supports four key scopes. Pick the narrowest that fits the use case:
+
+| Key scope | Authority | When to use | How to create |
+|---|---|---|---|
+| **Single-platform key** | Publish to ONE specific platform on ONE specific profile. No analytics, no profile mgmt, no billing. | The skill will only ever post to (e.g.) Instagram for one brand. | Dashboard → Settings → API Keys → New key → Limit to platform: `instagram` + Limit to profile: `my_brand` |
+| **Per-workspace key (RECOMMENDED DEFAULT)** | Publish + analytics within ONE workspace. No cross-workspace access. No billing. | The skill manages one brand or one client across multiple platforms. **This is the default the skill expects.** | Dashboard → Settings → Workspaces → \[workspace\] → API Keys → New key |
+| **Posting-only key** | Publish + analytics across all workspaces. **No** profile/workspace mgmt. **No** billing-impacting actions. | Power user with multiple brands but doesn't want the agent touching settings. | Dashboard → Settings → API Keys → New key → Toggle off "Profile management" + "Billing actions" |
+| **Global account key** | Everything: publish across all workspaces, profile mgmt, billing changes. | **AVOID for agent use.** Only use when you intentionally want the agent to be able to add seats / change plan. | Dashboard → Settings → API Keys → New key (default) |
+
+**Issue the per-workspace key by default.** If the user pastes a global account key, the skill should:
+1. Surface a warning: "The key you provided has global scope — it can change billing and manage other workspaces. Recommend re-issuing as a per-workspace key. Continue with the global key for this session?"
+2. Only proceed after explicit user acknowledgement.
+3. Never silently use a global key for billing-impacting actions — escalate to confirmation gate even if the action would otherwise auto-confirm.
+
+The skill **cannot** detect key scope from the bearer token alone (scope lives server-side). Surface the warning whenever the user mentions they're using their main account key, or whenever an action returns a `403 scope_exceeded` error pointing at a narrower-scoped recommendation.
+
+**Treat the key like a session cookie.** Rotate immediately if exposed (Dashboard → Settings → API Keys → Revoke + reissue). Full credential-handling rules in "Credential handling" section below.
 
 ### Permissions and authority granted to the agent
 | Capability | Granted | Default behavior |
@@ -117,9 +142,14 @@ Posts published through CodivUpload land on the user's real, public social accou
 
 ### Optional MCP server provenance (`codivupload-mcp`)
 - Official package: [`codivupload-mcp` on npm](https://www.npmjs.com/package/codivupload-mcp), maintained by Codivion LLC, source at [github.com/Codivion/codivupload-mcp](https://github.com/Codivion/codivupload-mcp).
-- **Pin a known-good version** rather than tracking floating `latest`. Recommended pinning at install time: `npm install -g codivupload-mcp@^1.0.0` (replace with the latest minor you have validated). For ad-hoc runs use `npx -y codivupload-mcp@1` rather than unbounded `npx codivupload-mcp`.
-- Verify provenance before installing: `npm view codivupload-mcp publisher integrity` should show `Codivion` and a matching tarball SHA. The MCP server inherits the API key from your OpenClaw config — no separate credential surface.
-- The MCP server is **optional**. The skill is fully usable without it via direct REST API + the public TypeScript / Python SDKs.
+- **Always use an exact version pin** for credentialed runtimes — not `^`, not `~`, not `latest`.
+  - Currently reviewed pinned version: `2.0.0`
+  - Publisher (verify): `codivion <accounts@codivion.com>` — `npm view codivupload-mcp publisher`
+  - Integrity sha512 (verify): `pK0r8XkR2M/brfn1Nsy6Uh7nGDx5qpx9h3pLgZljYkU3pv0BXKb7uJapBOFL11mBIQhWAl0hASxxCSLE11SDfA==` — `npm view codivupload-mcp@2.0.0 dist.integrity`
+  - Install command: `npm install -g codivupload-mcp@2.0.0`
+  - **Avoid `npx -y codivupload-mcp` without a pinned version** — the `-y` flag auto-accepts any version that resolves, which is a bad fit for a credentialed runtime.
+- The MCP server inherits the API key from your OpenClaw config — no separate credential surface, but the inheritance is why the version pin matters: a compromised future release would receive your live `CODIVUPLOAD_API_KEY`.
+- The MCP server is **optional**. The skill is fully usable without it via direct REST API + the public TypeScript / Python SDKs. Skip it if you'd rather keep the supply-chain surface to zero.
 
 ## Runtime requirements
 
@@ -149,7 +179,13 @@ The skill will read it from the OpenClaw config layer; never hardcode the key in
 | `CODIVUPLOAD_BASE_URL` | Optional | Override API base URL (default `https://api.codivupload.com/v1`). For self-hosted whitelabel deploys. |
 
 **Optional companion package:**
-- `codivupload-mcp` (npm) — drop-in MCP server. **Pin a major version** rather than tracking floating `latest`: `npm install -g codivupload-mcp@^1.0.0` or `npx -y codivupload-mcp@1`. Skill prefers MCP tool calls over raw API when available because it cuts agent token usage by ~60%. Works **without** the MCP server too (skill falls back to direct REST API + the official TypeScript / Python SDKs). See "Optional MCP server provenance" in Safety defaults below for verification steps.
+- `codivupload-mcp` (npm) — drop-in MCP server. **Use an exact version pin** (no caret, no tilde, no `latest`):
+  - Reviewed pinned version: `2.0.0`
+  - Publisher: `codivion <accounts@codivion.com>` (verify with `npm view codivupload-mcp publisher`)
+  - Tarball integrity (sha512): `pK0r8XkR2M/brfn1Nsy6Uh7nGDx5qpx9h3pLgZljYkU3pv0BXKb7uJapBOFL11mBIQhWAl0hASxxCSLE11SDfA==` (verify with `npm view codivupload-mcp@2.0.0 dist.integrity`)
+  - Install: `npm install -g codivupload-mcp@2.0.0` — exact pin, not a range.
+  - On-demand (avoid for credentialed runtimes): if you must use `npx`, pass the same exact version: `npx -y codivupload-mcp@2.0.0`. Do not run unattended `npx` against floating ranges.
+- The skill works **without** the MCP server (falls back to direct REST API + the official TypeScript / Python SDKs). Install the MCP server only if you want fewer agent tokens spent on tool descriptions; otherwise skip it to keep the supply-chain surface to zero.
 
 **Network access:**
 - Outbound HTTPS to `api.codivupload.com` (port 443)
