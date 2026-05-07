@@ -1,0 +1,79 @@
+{
+  "name": "codivupload-skills",
+  "version": "1.1.0",
+  "description": "AI Skills (Anthropic Skills format) for Claude Desktop, Claude Code, ChatGPT, Cursor, Zed — gives LLMs platform-specific context for posting to YouTube, Instagram, Facebook, X, TikTok, LinkedIn, and 5 more via the CodivUpload API + MCP server.",
+  "keywords": [
+    "claude-skills",
+    "anthropic-skills",
+    "claude-skill",
+    "claude-code-skill",
+    "antigravity",
+    "antigravity-skill",
+    "antigravity-kit",
+    "gemini-skill",
+    "google-antigravity",
+    "cursor-rules",
+    "cursor-skill",
+    "zed-mcp",
+    "chatgpt-skill",
+    "custom-gpt",
+    "mcp-skill",
+    "ai-skills",
+    "ai-agent-skills",
+    "social-media-ai",
+    "social-media-skill",
+    "social-media-automation",
+    "instagram-claude-skill",
+    "youtube-claude-skill",
+    "tiktok-claude-skill",
+    "x-claude-skill",
+    "linkedin-claude-skill",
+    "facebook-claude-skill",
+    "agency-claude-skill",
+    "codivupload",
+    "codivupload-mcp",
+    "codivupload-skill",
+    "social-media-api",
+    "social-media-scheduler",
+    "social-media-automation-tool",
+    "claude",
+    "chatgpt",
+    "cursor",
+    "zed",
+    "ai",
+    "llm",
+    "agent",
+    "agentic"
+  ],
+  "homepage": "https://codivupload.com/use-case/ai-skills",
+  "bugs": {
+    "url": "https://github.com/Codivion/codivupload-skills/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Codivion/codivupload-skills.git"
+  },
+  "license": "MIT",
+  "author": "Codivion LLC",
+  "bin": {
+    "codivupload-skills": "./bin/install.js"
+  },
+  "files": [
+    "bin",
+    "generic",
+    "instagram",
+    "youtube",
+    "tiktok",
+    "x",
+    "facebook-linkedin",
+    "agency",
+    "README.md",
+    "CONNECTOR_SETUP.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
