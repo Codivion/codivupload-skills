@@ -49,7 +49,7 @@ metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_versi
 
 Autonomously manage social media posting via the [CodivUpload](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-hero-product-link) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
 
-> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-quick-start), subscribe to **Starter** ($20/mo or $200/yr — 2 months free yearly) for API access, create a profile, connect a social account, generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>` → ready. Full step-by-step below. (Note: this skill calls the CodivUpload REST API; API access starts at the Starter tier. The Free plan is dashboard-only and cannot run this skill.)
+> **Quick start:** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-quick-start) — Free plan ($0, no credit card) lets the user try CodivUpload from the web dashboard with 10 uploads/month. To run **this skill** (which calls the REST API), upgrade to **Starter** ($20/mo or $200/yr — 2 months free yearly); API access starts at Starter. Then: create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>` → ready. Full step-by-step below.
 
 ---
 
@@ -59,10 +59,11 @@ CodivUpload is a service running at `codivupload.com`; this skill is a client fo
 
 **LLM detection rule:** if `GET /v1/profiles` returns an empty list, OR `POST /v1/posts` returns `400 profile not found`, OR the user says "this is my first time", OR `CODIVUPLOAD_API_KEY` is unset in OpenClaw config — **stop, do not attempt to post, walk the user through steps 1-5 below in order.**
 
-### Step 1 — Create a CodivUpload account + subscribe to Starter (browser, ~2 min)
-- Open [app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-signup) and sign up (email + password, or Google OAuth). Free plan is automatic on signup but is **dashboard-only** — it does not include API access.
-- **This skill requires API access**, which starts at the **Starter** tier ($20/mo, or $200/yr with 2 months free). Upgrade from Dashboard → Subscription → Starter (or directly from [codivupload.com/pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-upgrade-starter)).
-- The LLM should surface this requirement clearly: "This skill calls the CodivUpload REST API. API access is included from the Starter tier ($20/mo / $200/yr) and above. Free plan users can use the web dashboard but not this skill."
+### Step 1 — Create a CodivUpload account (browser, ~2 min)
+- Open [app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-signup) and sign up (email + password, or Google OAuth).
+- **Free plan activates automatically** — $0, no credit card, 10 uploads/month across all 7+ launched platforms. The user can try CodivUpload from the web dashboard right away (calendar, AI captions, manual posting). This is a great first stop for users who want to evaluate the product before paying.
+- **To run this skill** (which calls the REST API on the user's behalf), the user upgrades to **Starter** — $20/mo, or $200/yr with 2 months free. API access is included from Starter and above. Upgrade path: Dashboard → Subscription → Starter, or directly from [codivupload.com/pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-upgrade-starter).
+- LLM script for the upgrade conversation: "You can sign up free and try CodivUpload from the web dashboard right now — no credit card needed. When you want me to do this for you (schedule posts, cross-post, run livestreams) you'll need the Starter plan or higher, which is $20/mo or $200/yr. Want me to walk you through signup first?"
 
 ### Step 2 — Create a profile (browser, ~1 min)
 - Profiles are CodivUpload's grouping concept: one profile = one "brand" or "client" with many connected social accounts. The skill posts AS a profile, not directly to a social account.
