@@ -1,6 +1,6 @@
 # CodivUpload AI Skills
 
-Specialized AI skills for [CodivUpload](https://codivupload.com) — the social media platform with three first-class interfaces (visual dashboard, REST API, MCP server for AI agents) covering 7+ launched platforms (with Bluesky / LinkedIn / Snapchat / GBP in active rollout).
+Specialized AI skills for [CodivUpload](https://codivupload.com) — the social media platform with three first-class interfaces (visual dashboard, REST API, MCP server for AI agents) covering 7+ launched platforms (with Bluesky in active rollout).
 
 These are Markdown-based skills following the [Anthropic Skills](https://docs.anthropic.com/en/docs/agents-and-tools/agent-skills) format. They give Claude Code, Claude Desktop, and other agentic LLMs deep context on _how to use CodivUpload effectively_ for each social media platform.
 

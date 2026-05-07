@@ -1,7 +1,7 @@
 {
   "name": "codivupload-skills",
-  "version": "1.1.0",
-  "description": "AI Skills (Anthropic Skills format) for Claude Desktop, Claude Code, ChatGPT, Cursor, Zed — gives LLMs platform-specific context for posting to YouTube, Instagram, Facebook, X, TikTok, LinkedIn, and 5 more via the CodivUpload API + MCP server.",
+  "version": "1.2.0",
+  "description": "AI Skills (Anthropic Skills format) for Claude Desktop, Claude Code, ChatGPT, Cursor, Zed, and OpenClaw — gives LLMs platform-specific context for posting and scheduling across 7+ launched social platforms (YouTube, Instagram, Facebook, X, TikTok, Threads, Pinterest) via the CodivUpload API + MCP server. Bluesky in active rollout.",
   "keywords": [
     "claude-skills",
     "anthropic-skills",
