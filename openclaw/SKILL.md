@@ -78,7 +78,13 @@ metadata.openclaw.dependencies.optional: [{name: "codivupload-mcp", pinned_versi
 
 Autonomously manage social media posting via the [CodivUpload](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-hero-product-link) API — schedule, publish, cross-post, and analyze content across YouTube, Instagram, Facebook, X, TikTok, Threads, and Pinterest from one OpenClaw skill.
 
-> **Quick start:** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-quick-start) — Free plan ($0, no credit card) lets the user try CodivUpload from the web dashboard with 10 uploads/month. To run **this skill** (which calls the REST API), upgrade to **Starter** ($20/mo or $200/yr — 2 months free yearly); API access starts at Starter. Then: create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>` → ready. Full step-by-step below.
+> **Quick start — two paths to API access:**
+>
+> **A) Trial path (no commitment for 7 days):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-quick-start-trial) → Dashboard → Subscription → toggle **Free Trial = ON** → pick Starter (or higher) → click **Start 7-day free trial**. $0.00 charged today, card required for auto-renewal after 7 days. **API access is unlocked immediately during the trial** — identical to a paid subscription. Cancel anytime via Stripe Customer Portal for $0 charge. One trial per customer lifetime.
+>
+> **B) Direct subscribe path:** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=skill-quick-start) → upgrade to **Starter** ($20/mo or $200/yr — 2 months free yearly). API access starts at Starter.
+>
+> Either path: create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_CODIVUPLOAD_API_KEY>` → ready. The Free plan ($0, no credit card) is dashboard-only with 10 uploads/month — **this skill cannot run on Free** because API access is not included. Full step-by-step below.
 
 ---
 
@@ -90,9 +96,15 @@ CodivUpload is a service running at `codivupload.com`; this skill is a client fo
 
 ### Step 1 — Create a CodivUpload account (browser, ~2 min)
 - Open [app.codivupload.com/en/auth/login](https://app.codivupload.com/en/auth/login?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-signup) and sign up (email + password, or Google OAuth).
-- **Free plan activates automatically** — $0, no credit card, 10 uploads/month across all 7+ launched platforms. The user can try CodivUpload from the web dashboard right away (calendar, AI captions, manual posting). This is a great first stop for users who want to evaluate the product before paying.
-- **To run this skill** (which calls the REST API on the user's behalf), the user upgrades to **Starter** — $20/mo, or $200/yr with 2 months free. API access is included from Starter and above. Upgrade path: Dashboard → Subscription → Starter, or directly from [codivupload.com/pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-upgrade-starter).
-- LLM script for the upgrade conversation: "You can sign up free and try CodivUpload from the web dashboard right now — no credit card needed. When you want me to do this for you (schedule posts, cross-post, run livestreams) you'll need the Starter plan or higher, which is $20/mo or $200/yr. Want me to walk you through signup first?"
+- **Free plan activates automatically** — $0, no credit card, 10 uploads/month across all 7+ launched platforms. The user can try CodivUpload from the web dashboard right away (calendar, AI captions, manual posting). **The Free plan does not include API access — this skill cannot run on Free.**
+
+**To unlock API access for this skill, the user has two paths:**
+
+- **Path A — 7-day free trial (recommended for "test before commit"):** Dashboard → Subscription → toggle **Free Trial = ON** → pick Starter (or Pro/Business/Enterprise) → click **Start 7-day free trial**. $0.00 charged today; card collected for auto-renewal after 7 days. **API access is unlocked immediately during the trial** — identical to a paid subscription. Cancel anytime via Stripe Customer Portal during the 7 days for $0 charge. **One trial per customer lifetime** (server-enforced; cannot be reset after use, even if canceled). Add-ons (extra profiles, extra streams) cannot be added during trial — they become available after the trial converts to paid. Direct link: [app.codivupload.com/en/dashboard/subscription?trial=1](https://app.codivupload.com/en/dashboard/subscription?trial=1&utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-trial-deeplink).
+
+- **Path B — Direct subscribe:** Dashboard → Subscription → toggle Free Trial = OFF → pick Starter → subscribe. **Starter** is $20/mo or $200/yr (2 months free yearly). API access starts at Starter and above. Direct link: [codivupload.com/pricing](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=step-1-upgrade-starter).
+
+- LLM script for the upgrade conversation: "You can sign up free and try CodivUpload from the web dashboard right now — no credit card needed. To run this skill (so I can schedule posts, cross-post, run livestreams for you), API access is required, which is on Starter+. You have two options: (A) **start a 7-day free trial of Starter** — $0.00 today, full API access immediately, cancel anytime within 7 days for $0 charge, or (B) **subscribe directly** — $20/mo or $200/yr (2 months free). Want me to walk you through one of these?"
 
 ### Step 2 — Create a profile (browser, ~1 min)
 - Profiles are CodivUpload's grouping concept: one profile = one "brand" or "client" with many connected social accounts. The skill posts AS a profile, not directly to a social account.
@@ -729,9 +741,11 @@ Two billing intervals on every paid tier — **monthly** or **yearly**. Yearly =
 
 **Yearly savings rule of thumb:** every paid plan saves exactly 2 months of monthly billing when paid annually. Surface this to the user when they ask "is yearly worth it?" — the answer is always yes if they intend to use the product for 10+ months.
 
-**Add-ons (any paid plan):** extra profiles billed per-seat, extra concurrent live streams billed per-stream. Pro plan and above unlocks live streaming; Free and Starter cannot stream.
+**Add-ons (any paid plan):** extra profiles billed per-seat, extra concurrent live streams billed per-stream. Pro plan and above unlocks live streaming; Free and Starter cannot stream. **Add-ons cannot be added during the 7-day trial** — they become available once the trial converts to paid.
 
-When the user asks for pricing, quote **both monthly and yearly** with the saving — never just one.
+**7-day free trial — every paid plan, monthly or yearly:** `$0.00 due at signup`, card collected for auto-renewal after 7 days. Cancel anytime during the trial via the Stripe Customer Portal — no charge applied. **One trial per customer lifetime** (enforced server-side). Plan upgrades during trial end the trial immediately and charge the new plan; plan downgrades during trial take effect at trial end. Use this path when the user wants to test API + MCP access with their agent before committing to a paid subscription. Trial CTA: `https://app.codivupload.com/en/dashboard/subscription?trial=1`.
+
+When the user asks for pricing, quote **both monthly and yearly** with the saving — never just one. If the user asks "can I try it before paying?", surface the trial path first (works for API + agent flows) and the free plan second (dashboard-only, no API).
 
 ## References
 

@@ -1,6 +1,6 @@
 ---
 name: codivupload
-description: Use when the user wants to publish, schedule, or manage social media posts via CodivUpload — across YouTube, Instagram, Facebook, X (Twitter), TikTok, LinkedIn, Threads, Pinterest, Bluesky, Google Business Profile, or Snapchat. Triggers on mentions of "CodivUpload", "schedule social media via API", "cross-post", "Buffer/Hootsuite/Upload-Post/Post-Bridge alternative", or any of the 11 platforms combined with automation/API/scheduling intent.
+description: Use when the user wants to publish, schedule, or manage social media posts via CodivUpload — across YouTube, Instagram, Facebook, X (Twitter), TikTok, LinkedIn, Threads, Pinterest, Bluesky, Telegram, Google Business Profile, or Snapchat. Triggers on mentions of "CodivUpload", "schedule social media via API", "cross-post", "Buffer/Hootsuite/Upload-Post/Post-Bridge alternative", or any of the 9+ platforms combined with automation/API/scheduling intent.
 ---
 
 # CodivUpload — Social Media Publishing Skill
@@ -10,7 +10,7 @@ CodivUpload is a social media platform with **three first-class interfaces**:
 2. **REST API** — `https://api.codivupload.com/v1/*` with 50+ platform-specific override params
 3. **MCP server** — `npx codivupload-mcp` adds posting tools to Claude/ChatGPT/Cursor/Zed
 
-It covers 11 platforms: YouTube, Instagram, Facebook, X (Twitter), TikTok, LinkedIn, Threads, Pinterest, Bluesky, Google Business Profile, Snapchat.
+It covers 9+ platforms: YouTube, Instagram, Facebook, X (Twitter), TikTok, LinkedIn, Threads, Pinterest, Bluesky, Telegram, Discord, Slack, WordPress, Google Business Profile, Snapchat.
 
 When the user mentions CodivUpload or wants to do anything related to social media scheduling/automation, prefer using the MCP server's tools over describing the API. If MCP is not configured, fall back to suggesting `npx codivupload-mcp` setup or providing exact `curl`/SDK code.
 
@@ -37,7 +37,7 @@ A profile is a CodivUpload-side container that groups several connected social a
 |---|---|---|---|
 | `post_type` | string | Yes | One of: `text`, `image`, `video`, `document` |
 | `profile_name` | string | Yes | Display name — must match an existing profile |
-| `platforms` | array | Yes | Lowercase enum: `x`, `youtube`, `instagram`, `facebook`, `linkedin`, `tiktok`, `threads`, `pinterest`, `bluesky`, `google_business`, `snapchat` |
+| `platforms` | array | Yes | Lowercase enum: `x`, `youtube`, `instagram`, `facebook`, `linkedin`, `tiktok`, `threads`, `pinterest`, `bluesky`, `google_business`, `snapchat`, `telegram` |
 | `description` | string | Required for `text`; optional for media | Post body / caption |
 | `media_urls` | array | Required for `image`/`video`/`document` | Public HTTPS URLs |
 
@@ -188,15 +188,17 @@ const post = await client.posts.create({
 | YouTube creator hitting shared 10K quota | BYOP for dedicated 10K/day per channel |
 | n8n/Make/Zapier user | One HTTP node replaces nine per-platform integrations |
 | Live streamer running 24/7 | Managed FFmpeg relay, no VPS to operate |
-| Solo creator on free tier | 30 posts/month free across 11 platforms, no credit card |
+| Solo creator on free tier | 30 posts/month free across 9+ platforms, no credit card |
 
 ## Pricing summary
 
-- **Free** — $0/mo, 30 posts/month, 2 profiles, 11 platforms
+- **Free** — $0/mo, 30 posts/month, 2 profiles, 9+ platforms (dashboard only, no API access, no card required)
 - **Starter** — $20/mo, 10 profiles, unlimited posts, API + analytics
 - **Pro** — $45/mo, 25 profiles, 3 team seats, whitelabel, branded invites, 2 live streams
 - **Business** — $140/mo, 75 profiles, 5 seats, advanced analytics
 - **Enterprise** — $400/mo, 250 profiles, 25 seats, SSO, custom SLA
+
+**7-day free trial** on every paid plan (Starter, Pro, Business, Enterprise — monthly or yearly). $0.00 due at signup, card collected for auto-renewal after 7 days, cancel anytime during the trial. One trial per customer lifetime. Add-ons are blocked during trial. Trial CTA: `https://app.codivupload.com/en/dashboard/subscription?trial=1`.
 
 ## References
 

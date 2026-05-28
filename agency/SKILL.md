@@ -46,6 +46,8 @@ Workspace
 
 Counts are GLOBAL across all workspaces the user owns. So 3 profiles in Workspace A + 7 profiles in Workspace B = 10 toward the plan's profile cap.
 
+**7-day free trial** is available on every paid plan (monthly or yearly) for new customers. $0.00 due at signup, card required for auto-renewal, cancel anytime during the trial. One trial per customer lifetime — once used (or skipped via direct paid signup), it cannot be reset. **Add-ons cannot be added during trial**; team seats and extra profiles become available after conversion to paid.
+
 ## API for agency operations
 
 ### Create a profile per end customer

@@ -10,7 +10,15 @@ Autonomously manage social media posting via the [CodivUpload](https://codivuplo
 
 > **Start free, upgrade when you want the agent to do it for you.** [Sign up for free](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=hero-free-cta) — no credit card — and try CodivUpload from the **web dashboard**: 10 uploads/month across all 7+ launched platforms (YouTube, Instagram, Facebook, X, TikTok, Threads, Pinterest), drag-and-drop calendar, AI captions. When you're ready for your **OpenClaw agent to schedule + cross-post + run livestreams for you**, upgrade to **Starter** — $20/mo (or $200/yr — 2 months free), API access included. Pro / Business / Enterprise unlock more profiles, team seats, livestreams, and analytics. [See full pricing →](https://codivupload.com/pricing?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=pricing-callout)
 
-> **Quick start (1 line):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=quick-start-signup), subscribe to Starter, create a profile, connect a social account, generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_API_KEY>` → ready. Full step-by-step in the Setup section below.
+> **Prefer to test the API with your agent first? Start a 7-day free trial.** $0.00 due today, card collected for auto-renewal after the trial. Cancel anytime during the 7 days — no charge. One trial per customer lifetime. Available on every paid plan, monthly or yearly. Pick this if you want full API + MCP access for your OpenClaw agent before committing to a subscription. [Start trial →](https://app.codivupload.com/en/dashboard/subscription?trial=1&utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=hero-trial-cta)
+
+> **Quick start — two paths to get an API key:**
+>
+> **A) Trial path (recommended for "try first, decide later"):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=quick-start-trial-signup) → open Dashboard → Subscription → toggle **Free Trial = ON** → pick Starter (or Pro/Business/Enterprise) → click **Start 7-day free trial** ($0.00 charged today, card required for auto-renewal) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_API_KEY>` → ready. You have **full API + MCP access immediately** — same as a paid subscription. Cancel anytime in the 7 days from the Stripe Customer Portal for $0 charge.
+>
+> **B) Direct subscribe path (if you already know you want it):** sign up at [codivupload.com](https://codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=quick-start-signup) → subscribe to Starter ($20/mo or $200/yr) → create a profile → connect a social account → generate an API key → `openclaw config set CODIVUPLOAD_API_KEY=<YOUR_API_KEY>` → ready.
+>
+> Both paths grant identical access. Full step-by-step in the Setup section below.
 
 ### Try this on day 1 (after setup)
 Once you've completed the 5-minute setup, paste these prompts to your OpenClaw agent — each one runs through the full skill:
