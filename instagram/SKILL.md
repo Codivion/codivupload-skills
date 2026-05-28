@@ -118,6 +118,15 @@ client.posts.create(
 )
 ```
 
+## Get an API key
+
+This skill needs a CodivUpload API key (`cdv_...`). Two paths:
+
+- **7-day free trial** — `$0.00` today, card collected for auto-renewal after 7 days. **Full API access during the trial**, cancel anytime in the Stripe Customer Portal for $0 charge. One trial per customer lifetime. [Start trial](https://app.codivupload.com/en/dashboard/subscription?trial=1).
+- **Direct subscribe** — Starter $20/mo (or $200/yr — 2 months free). API access included from Starter and above. [See plans](https://codivupload.com/pricing).
+
+The Free plan does not include API access — this skill cannot run on Free.
+
 ## Resources
 
 - Step-by-step: https://codivupload.com/how-to/schedule-instagram-posts-api
