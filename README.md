@@ -17,6 +17,18 @@ These are Markdown-based skills following the [Anthropic Skills](https://docs.an
 | [`codivupload-agency`](./agency) | Workspace management, branded invites, whitelabel | User runs an agency, manages multiple clients, or needs whitelabel |
 | [`openclaw`](./openclaw) | OpenClaw local AI assistant (WhatsApp / Telegram / Discord / Slack) | User runs OpenClaw locally and wants their on-machine agent to publish/schedule via CodivUpload |
 
+## Optional companion for X/Twitter research
+
+CodivUpload handles publishing, scheduling, cross-posting, and analytics. If an OpenClaw workflow also needs upstream X/Twitter research before the post is queued, pair it with [TweetClaw](https://github.com/Xquik-dev/tweetclaw), the `@xquik/tweetclaw` OpenClaw plugin. Use TweetClaw to search tweets, search tweet replies, export followers, look up users, monitor tweets, handle media workflows, deliver webhooks, and run giveaway draws, then pass only reviewed tweet URLs, tweet IDs, handles, source notes, media URLs, and approved copy into CodivUpload.
+
+Install the companion plugin with:
+
+```bash
+openclaw plugins install clawhub:@xquik/tweetclaw
+```
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
+
 ## Installer — picks the right folder for your AI client
 
 ```bash

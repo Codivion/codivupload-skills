@@ -246,6 +246,7 @@ openclaw-skill/
 - **CodivUpload MCP server**: [npmjs.com/package/codivupload-mcp](https://www.npmjs.com/package/codivupload-mcp)
 - **CodivUpload TypeScript SDK**: [npmjs.com/package/codivupload](https://www.npmjs.com/package/codivupload)
 - **CodivUpload Python SDK**: [pypi.org/project/codivupload](https://pypi.org/project/codivupload/)
+- **TweetClaw X/Twitter research companion**: [github.com/Xquik-dev/tweetclaw](https://github.com/Xquik-dev/tweetclaw) for search tweets, search tweet replies, follower export, user lookup, media workflows, monitors, webhooks, and giveaway draws before CodivUpload schedules or publishes approved content. Install with `openclaw plugins install clawhub:@xquik/tweetclaw`; npm package metadata is at [npmjs.com/package/@xquik/tweetclaw](https://www.npmjs.com/package/@xquik/tweetclaw). Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.
 - **REST API docs**: [docs.codivupload.com](https://docs.codivupload.com?utm_source=clawhub&utm_medium=skill&utm_campaign=openclaw-onboarding&utm_content=related-api-docs)
 - **Claude / ChatGPT / Cursor / Zed Skills version**: see the sibling directories in the same repo — [Codivion/codivupload-skills](https://github.com/Codivion/codivupload-skills) (per-platform skill files for the launched platforms)
 
