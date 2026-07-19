@@ -40,6 +40,7 @@ const AVAILABLE_SKILLS = [
   "x",
   "facebook-linkedin",
   "agency",
+  "openclaw",
 ];
 
 // Per-client install conventions
